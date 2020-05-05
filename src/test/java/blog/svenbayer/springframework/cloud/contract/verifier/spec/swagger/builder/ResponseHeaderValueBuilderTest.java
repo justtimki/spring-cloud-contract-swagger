@@ -79,7 +79,9 @@ public class ResponseHeaderValueBuilderTest {
 	@Test
 	public void createResponseHeaderValue() {
 		ArrayProperty property = new ArrayProperty();
-		Object defaultValue = responseHeaderValueBuilder.createResponseHeaderValue("key", property, new HashMap<>());
+		Object defaultValue = responseHeaderValueBuilder.createResponseHeaderValue("key",
+				property, new HashMap<>());
 		assertEquals(new ArrayList<>(Collections.singleton(DEFAULT_INT)), defaultValue);
 	}
+
 }

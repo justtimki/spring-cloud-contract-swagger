@@ -1,10 +1,13 @@
 package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder;
 
-import java.util.regex.Pattern;
-
 import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerFormats.DOUBLE;
 import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerFormats.FLOAT;
-import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerTypes.*;
+import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerTypes.BOOLEAN;
+import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerTypes.INTEGER;
+import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerTypes.NUMBER;
+import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerTypes.STRING;
+
+import java.util.regex.Pattern;
 
 /**
  * Builds pattern for matching in contract tests.
@@ -15,7 +18,6 @@ class PatternBuilder {
 
 	/**
 	 * Creates a pattern for a given parameter.
-	 *
 	 * @param type the primitive type
 	 * @param format the parameter
 	 * @return the pattern
@@ -27,7 +29,6 @@ class PatternBuilder {
 
 	/**
 	 * Creates a regex for a given parameter.
-	 *
 	 * @param type the primitive type
 	 * @param format the parameter
 	 * @return the regex
@@ -36,7 +37,8 @@ class PatternBuilder {
 		if (STRING.type().equals(type)) {
 			return ".+";
 		}
-		if ((NUMBER.type().equals(type)) && (DOUBLE.format().equals(format) || FLOAT.format().equals(format))) {
+		if ((NUMBER.type().equals(type))
+				&& (DOUBLE.format().equals(format) || FLOAT.format().equals(format))) {
 			return "[0-9]+\\.[0-9]+";
 		}
 		if (INTEGER.type().equals(type)) {
@@ -47,4 +49,5 @@ class PatternBuilder {
 		}
 		return ".+";
 	}
+
 }

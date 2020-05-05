@@ -23,18 +23,23 @@ public class SwaggerReferenceResolverFactoryTest {
 	@DisplayName("Fails to receive SwaggerReferenceResolver for null")
 	@Test
 	public void failsforNull() {
-		SwaggerContractConverterException exception = assertThrows(SwaggerContractConverterException.class, () -> {
-			factory.getReferenceResolver(null, null);
-		});
-		assertEquals("Swagger reference must not be null or empty!", exception.getMessage());
+		SwaggerContractConverterException exception = assertThrows(
+				SwaggerContractConverterException.class, () -> {
+					factory.getReferenceResolver(null, null);
+				});
+		assertEquals("Swagger reference must not be null or empty!",
+				exception.getMessage());
 	}
 
 	@DisplayName("Fails to receive SwaggerReferenceResolver for empty string")
 	@Test
 	public void failsForEmptyString() {
-		SwaggerContractConverterException exception = assertThrows(SwaggerContractConverterException.class, () -> {
-			factory.getReferenceResolver("", null);
-		});
-		assertEquals("Swagger reference must not be null or empty!", exception.getMessage());
+		SwaggerContractConverterException exception = assertThrows(
+				SwaggerContractConverterException.class, () -> {
+					factory.getReferenceResolver("", null);
+				});
+		assertEquals("Swagger reference must not be null or empty!",
+				exception.getMessage());
 	}
+
 }

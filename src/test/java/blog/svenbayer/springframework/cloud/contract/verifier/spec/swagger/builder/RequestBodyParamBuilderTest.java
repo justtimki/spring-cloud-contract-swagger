@@ -26,9 +26,11 @@ public class RequestBodyParamBuilderTest {
 	@Test
 	public void brokenBodyParameter() {
 		BodyParameter parameter = new BodyParameter();
-		SwaggerContractConverterException exception = assertThrows(SwaggerContractConverterException.class, () -> {
-			requestBodyParamBuilder.createValueForRequestBody(parameter, new HashMap<>());
-		});
+		SwaggerContractConverterException exception = assertThrows(
+				SwaggerContractConverterException.class, () -> {
+					requestBodyParamBuilder.createValueForRequestBody(parameter,
+							new HashMap<>());
+				});
 		assertEquals("Could not parse body for request", exception.getMessage());
 	}
 
@@ -39,7 +41,8 @@ public class RequestBodyParamBuilderTest {
 		HashMap<String, String> examples = new HashMap<>();
 		examples.put("key", "value");
 		parameter.setExamples(examples);
-		String actualValue = requestBodyParamBuilder.createValueForRequestBody(parameter, new HashMap<>());
+		String actualValue = requestBodyParamBuilder.createValueForRequestBody(parameter,
+				new HashMap<>());
 		assertEquals("value", actualValue);
 	}
 
@@ -49,9 +52,11 @@ public class RequestBodyParamBuilderTest {
 		BodyParameter parameter = new BodyParameter();
 		parameter.setExamples(new HashMap<>());
 		parameter.setVendorExtensions(new HashMap<>());
-		SwaggerContractConverterException exception = assertThrows(SwaggerContractConverterException.class, () -> {
-			requestBodyParamBuilder.createValueForRequestBody(parameter, new HashMap<>());
-		});
+		SwaggerContractConverterException exception = assertThrows(
+				SwaggerContractConverterException.class, () -> {
+					requestBodyParamBuilder.createValueForRequestBody(parameter,
+							new HashMap<>());
+				});
 		assertEquals("Could not parse body for request", exception.getMessage());
 	}
 
@@ -63,9 +68,12 @@ public class RequestBodyParamBuilderTest {
 		schema.setEnum(new ArrayList<>());
 		schema.setVendorExtensions(new HashMap<>());
 		parameter.setSchema(schema);
-		SwaggerContractConverterException exception = assertThrows(SwaggerContractConverterException.class, () -> {
-			requestBodyParamBuilder.createValueForRequestBody(parameter, new HashMap<>());
-		});
+		SwaggerContractConverterException exception = assertThrows(
+				SwaggerContractConverterException.class, () -> {
+					requestBodyParamBuilder.createValueForRequestBody(parameter,
+							new HashMap<>());
+				});
 		assertEquals("Could not parse body for request", exception.getMessage());
 	}
+
 }

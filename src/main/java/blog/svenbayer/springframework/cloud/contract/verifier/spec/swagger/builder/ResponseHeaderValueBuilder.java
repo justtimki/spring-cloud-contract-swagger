@@ -1,20 +1,28 @@
 package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder;
 
-import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.reference.ReferenceResolverFactory;
-import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.reference.SwaggerReferenceResolver;
-import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerFields;
-import io.swagger.models.Model;
-import io.swagger.models.properties.*;
-import org.springframework.cloud.contract.spec.internal.DslProperty;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Map;
-
 import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.DefaultValues.DEFAULT_BOOLEAN;
 import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.DefaultValues.DEFAULT_INT;
 import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerFormats.INT_32;
 import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerFormats.INT_64;
+
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.reference.ReferenceResolverFactory;
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.reference.SwaggerReferenceResolver;
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerFields;
+import io.swagger.models.Model;
+import io.swagger.models.properties.AbstractNumericProperty;
+import io.swagger.models.properties.ArrayProperty;
+import io.swagger.models.properties.BooleanProperty;
+import io.swagger.models.properties.DoubleProperty;
+import io.swagger.models.properties.FloatProperty;
+import io.swagger.models.properties.IntegerProperty;
+import io.swagger.models.properties.LongProperty;
+import io.swagger.models.properties.Property;
+import io.swagger.models.properties.RefProperty;
+import io.swagger.models.properties.StringProperty;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
+import org.springframework.cloud.contract.spec.internal.DslProperty;
 
 /**
  * Creates a value for a response header.
@@ -23,38 +31,41 @@ import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagge
  */
 public final class ResponseHeaderValueBuilder {
 
-	private ReferenceResolverFactory refFactory = new ReferenceResolverFactory();
-	private NumericPropertyValueBuilder numericPropertyValueBuilder = new NumericPropertyValueBuilder();
+	private final ReferenceResolverFactory refFactory = new ReferenceResolverFactory();
+
+	private final NumericPropertyValueBuilder numericPropertyValueBuilder = new NumericPropertyValueBuilder();
 
 	/**
 	 * Creates a dsl value for a response header property.
-	 *
+	 * <p>
 	 * Note: Pattern does not appear for Property types
-	 *
 	 * @param key the key of the header
 	 * @param property the response header property
 	 * @param definitions the Swagger model definition
 	 * @return the value for the given response header property
 	 */
-	public DslProperty createDslResponseHeaderValue(String key, Property property, Map<String, Model> definitions) {
+	public DslProperty createDslResponseHeaderValue(String key, Property property,
+			Map<String, Model> definitions) {
 		Object value = createResponseHeaderValue(key, property, definitions);
 		return new DslProperty<>(value);
 	}
 
 	/**
 	 * Creates a value for a response header property.
-	 *
 	 * @param key the key of the header
 	 * @param property the response header property
 	 * @param definitions the Swagger model definition
 	 * @return the value for the given response header property
 	 */
-	public Object createResponseHeaderValue(String key, Property property, Map<String, Model> definitions) {
+	public Object createResponseHeaderValue(String key, Property property,
+			Map<String, Model> definitions) {
 		if (property.getExample() != null) {
 			return postFormatNumericValue(property, property.getExample());
 		}
-		if (property.getVendorExtensions() != null && property.getVendorExtensions().get(SwaggerFields.X_EXAMPLE.field()) != null) {
-			return postFormatNumericValue(property, property.getVendorExtensions().get(SwaggerFields.X_EXAMPLE.field()));
+		if (property.getVendorExtensions() != null && property.getVendorExtensions()
+				.get(SwaggerFields.X_EXAMPLE.field()) != null) {
+			return postFormatNumericValue(property,
+					property.getVendorExtensions().get(SwaggerFields.X_EXAMPLE.field()));
 		}
 		Object defaultValue = getDefaultValue(property);
 		if (defaultValue != null) {
@@ -63,19 +74,24 @@ public final class ResponseHeaderValueBuilder {
 		if (property instanceof RefProperty) {
 			RefProperty refProperty = (RefProperty) property;
 			String ref = refProperty.get$ref();
-			SwaggerReferenceResolver resolver = this.refFactory.getReferenceResolver(ref, refProperty.getVendorExtensions());
+			SwaggerReferenceResolver resolver = this.refFactory.getReferenceResolver(ref,
+					refProperty.getVendorExtensions());
 			return resolver.resolveReference(definitions);
 		}
 		if (property instanceof ArrayProperty) {
 			ArrayProperty arrayProperty = (ArrayProperty) property;
 			if (arrayProperty.getItems() == null) {
 				return new ArrayList<>(Collections.singleton(DEFAULT_INT));
-			} else {
-				return new ArrayList<>(Collections.singletonList(createResponseHeaderValue(key, arrayProperty.getItems(), definitions)));
+			}
+			else {
+				return new ArrayList<>(
+						Collections.singletonList(createResponseHeaderValue(key,
+								arrayProperty.getItems(), definitions)));
 			}
 		}
 		if (property instanceof AbstractNumericProperty) {
-			return this.numericPropertyValueBuilder.createDefaultNumericValue((AbstractNumericProperty) property);
+			return this.numericPropertyValueBuilder
+					.createDefaultNumericValue((AbstractNumericProperty) property);
 		}
 		if (property instanceof BooleanProperty) {
 			return DEFAULT_BOOLEAN;
@@ -90,8 +106,8 @@ public final class ResponseHeaderValueBuilder {
 	}
 
 	/**
-	 * Formats a numeric property correctly if its value is a double but its format is an int32 or int64.
-	 *
+	 * Formats a numeric property correctly if its value is a double but its format is an
+	 * int32 or int64.
 	 * @param property the property
 	 * @param value the value that could be a double
 	 * @return the formatted property
@@ -100,7 +116,8 @@ public final class ResponseHeaderValueBuilder {
 		if (property.getFormat() == null) {
 			return value;
 		}
-		if (value instanceof Double && (property.getFormat().equals(INT_32.format()) || property.getFormat().equals(INT_64.format()))) {
+		if (value instanceof Double && (property.getFormat().equals(INT_32.format())
+				|| property.getFormat().equals(INT_64.format()))) {
 			return ((Double) value).intValue();
 		}
 		return value;
@@ -108,7 +125,6 @@ public final class ResponseHeaderValueBuilder {
 
 	/**
 	 * Returns the property as typed property instance.
-	 *
 	 * @param property the property
 	 * @return the specified typed property or null if not matching subclass is found
 	 */
@@ -133,4 +149,5 @@ public final class ResponseHeaderValueBuilder {
 		}
 		return null;
 	}
+
 }

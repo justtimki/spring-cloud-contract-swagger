@@ -1,11 +1,16 @@
 package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder;
 
-import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.DefaultValues;
-import io.swagger.models.properties.*;
-
-import java.math.BigDecimal;
-
 import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.DefaultValues.DEFAULT_INT;
+
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.DefaultValues;
+import io.swagger.models.properties.AbstractNumericProperty;
+import io.swagger.models.properties.BaseIntegerProperty;
+import io.swagger.models.properties.DecimalProperty;
+import io.swagger.models.properties.DoubleProperty;
+import io.swagger.models.properties.FloatProperty;
+import io.swagger.models.properties.IntegerProperty;
+import io.swagger.models.properties.LongProperty;
+import java.math.BigDecimal;
 
 /**
  * Creates default values for {@link AbstractNumericProperty}.
@@ -14,11 +19,10 @@ import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagge
  */
 public class NumericPropertyValueBuilder {
 
-	private DefaultValues defaultValues = new DefaultValues();
+	private final DefaultValues defaultValues = new DefaultValues();
 
 	/**
 	 * Creates a default numeric value for the given property
-	 *
 	 * @param numeric the numeric property
 	 * @return the default value
 	 */
@@ -26,15 +30,19 @@ public class NumericPropertyValueBuilder {
 		BigDecimal numericPropertyValue = null;
 		if (numeric.getMinimum() != null) {
 			if (numeric.getExclusiveMinimum() != null && numeric.getExclusiveMinimum()) {
-				numericPropertyValue = numeric.getMinimum().add(new BigDecimal(DEFAULT_INT));
-			} else {
+				numericPropertyValue = numeric.getMinimum()
+						.add(new BigDecimal(DEFAULT_INT));
+			}
+			else {
 				numericPropertyValue = numeric.getMinimum();
 			}
 		}
 		if (numeric.getMaximum() != null) {
 			if (numeric.getExclusiveMaximum() != null && numeric.getExclusiveMaximum()) {
-				numericPropertyValue = numeric.getMaximum().subtract(new BigDecimal(DEFAULT_INT));
-			} else {
+				numericPropertyValue = numeric.getMaximum()
+						.subtract(new BigDecimal(DEFAULT_INT));
+			}
+			else {
 				numericPropertyValue = numeric.getMaximum();
 			}
 		}
@@ -43,19 +51,22 @@ public class NumericPropertyValueBuilder {
 
 	/**
 	 * Returns the typed value for the given numeric property and value
-	 *
 	 * @param numeric the property
 	 * @param numericPropertyValue the value
 	 * @return the typed value
 	 */
-	Object getTypedNumericValue(AbstractNumericProperty numeric, BigDecimal numericPropertyValue) {
+	Object getTypedNumericValue(AbstractNumericProperty numeric,
+			BigDecimal numericPropertyValue) {
 		if (numericPropertyValue == null) {
-			return this.defaultValues.createDefaultValueForType(numeric.getType(), numeric.getFormat(), numeric.getName(), numeric.getMinimum(), numeric.getMaximum());
+			return this.defaultValues.createDefaultValueForType(numeric.getType(),
+					numeric.getFormat(), numeric.getName(), numeric.getMinimum(),
+					numeric.getMaximum());
 		}
 		if (numeric instanceof LongProperty) {
 			return numericPropertyValue.longValue();
 		}
-		if (numeric instanceof IntegerProperty || numeric instanceof BaseIntegerProperty) {
+		if (numeric instanceof IntegerProperty
+				|| numeric instanceof BaseIntegerProperty) {
 			return numericPropertyValue.intValue();
 		}
 		if (numeric instanceof DoubleProperty) {
@@ -69,4 +80,5 @@ public class NumericPropertyValueBuilder {
 		}
 		return DEFAULT_INT;
 	}
+
 }

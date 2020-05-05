@@ -19,16 +19,17 @@ public class ResponseBodyBuilderTest {
 
 	@Before
 	public void init() {
-	    builder = new ResponseBodyBuilder();
+		builder = new ResponseBodyBuilder();
 	}
 
 	@DisplayName("Fails for response without schema and without examples")
 	@Test
 	public void responseWithoutSchemaWithoutExamples() {
 		Response response = new Response();
-		SwaggerContractConverterException exception = assertThrows(SwaggerContractConverterException.class, () -> {
-			builder.createValueForResponseBody(response, new HashMap<>());
-		});
+		SwaggerContractConverterException exception = assertThrows(
+				SwaggerContractConverterException.class, () -> {
+					builder.createValueForResponseBody(response, new HashMap<>());
+				});
 		assertEquals("Could not parse body for response", exception.getMessage());
 	}
 
@@ -37,9 +38,10 @@ public class ResponseBodyBuilderTest {
 	public void responseWithBrokenSchemaWithoutExamples() {
 		Response response = new Response();
 		response.setResponseSchema(new ModelImpl());
-		SwaggerContractConverterException exception = assertThrows(SwaggerContractConverterException.class, () -> {
-			builder.createValueForResponseBody(response, new HashMap<>());
-		});
+		SwaggerContractConverterException exception = assertThrows(
+				SwaggerContractConverterException.class, () -> {
+					builder.createValueForResponseBody(response, new HashMap<>());
+				});
 		assertEquals("Could not parse body for response", exception.getMessage());
 	}
 
@@ -50,7 +52,8 @@ public class ResponseBodyBuilderTest {
 		HashMap<String, Object> examples = new HashMap<>();
 		examples.put("key", "value");
 		response.setExamples(examples);
-		String actualValue = builder.createValueForResponseBody(response, new HashMap<>());
+		String actualValue = builder.createValueForResponseBody(response,
+				new HashMap<>());
 		assertEquals("value", actualValue);
 	}
 
@@ -61,9 +64,10 @@ public class ResponseBodyBuilderTest {
 		response.setExamples(new HashMap<>());
 		response.setVendorExtensions(new HashMap<>());
 		response.setResponseSchema(new ModelImpl());
-		SwaggerContractConverterException exception = assertThrows(SwaggerContractConverterException.class, () -> {
-			builder.createValueForResponseBody(response, new HashMap<>());
-		});
+		SwaggerContractConverterException exception = assertThrows(
+				SwaggerContractConverterException.class, () -> {
+					builder.createValueForResponseBody(response, new HashMap<>());
+				});
 		assertEquals("Could not parse body for response", exception.getMessage());
 	}
 
@@ -75,9 +79,11 @@ public class ResponseBodyBuilderTest {
 		model.setVendorExtensions(new HashMap<>());
 		model.setEnum(new ArrayList<>());
 		response.setResponseSchema(model);
-		SwaggerContractConverterException exception = assertThrows(SwaggerContractConverterException.class, () -> {
-			builder.createValueForResponseBody(response, new HashMap<>());
-		});
+		SwaggerContractConverterException exception = assertThrows(
+				SwaggerContractConverterException.class, () -> {
+					builder.createValueForResponseBody(response, new HashMap<>());
+				});
 		assertEquals("Could not parse body for response", exception.getMessage());
 	}
+
 }

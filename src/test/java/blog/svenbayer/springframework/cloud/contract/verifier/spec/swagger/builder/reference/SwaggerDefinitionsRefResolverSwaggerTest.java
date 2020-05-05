@@ -12,11 +12,14 @@ public class SwaggerDefinitionsRefResolverSwaggerTest {
 	@DisplayName("Resolve Swagger definitions for invalid json")
 	@Test
 	public void resolveDefinitionsForInvalidJson() {
-		SwaggerDefinitionsRefResolverSwagger resolver = new SwaggerDefinitionsRefResolverSwagger("#invalid");
-		SwaggerContractConverterException exception = assertThrows(SwaggerContractConverterException.class, () -> {
-			resolver.resolveReference(null);
-		});
+		SwaggerDefinitionsRefResolverSwagger resolver = new SwaggerDefinitionsRefResolverSwagger(
+				"#invalid");
+		SwaggerContractConverterException exception = assertThrows(
+				SwaggerContractConverterException.class, () -> {
+					resolver.resolveReference(null);
+				});
 		assertEquals("Could not resolve reference '#invalid'", exception.getMessage());
 
 	}
+
 }

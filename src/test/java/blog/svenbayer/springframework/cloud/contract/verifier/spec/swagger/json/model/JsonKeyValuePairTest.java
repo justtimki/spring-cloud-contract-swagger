@@ -1,12 +1,26 @@
-package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.json.model;
+/*
+ * Copyright 2020-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import org.junit.Test;
-import org.junit.jupiter.api.DisplayName;
+package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.json.model;
 
 import java.util.HashSet;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 
 public class JsonKeyValuePairTest {
 
@@ -17,7 +31,7 @@ public class JsonKeyValuePairTest {
 		aSet.add(new JsonKeyValuePair("a1", null));
 		JsonKeyValuePair a = new JsonKeyValuePair("a", aSet);
 
-		assertEquals(a, a);
+		Assertions.assertEquals(a, a);
 	}
 
 	@DisplayName("Equals for same key and value")
@@ -31,7 +45,7 @@ public class JsonKeyValuePairTest {
 		bSet.add(new JsonKeyValuePair("a1", null));
 		JsonKeyValuePair b = new JsonKeyValuePair("a", bSet);
 
-		assertEquals(a, b);
+		Assertions.assertEquals(a, b);
 	}
 
 	@DisplayName("Not equals for same key but different value")
@@ -45,7 +59,7 @@ public class JsonKeyValuePairTest {
 		bSet.add(new JsonKeyValuePair("different", null));
 		JsonKeyValuePair b = new JsonKeyValuePair("a", bSet);
 
-		assertNotEquals(a, b);
+		Assertions.assertNotEquals(a, b);
 	}
 
 	@DisplayName("Not equals for different types")
@@ -55,6 +69,7 @@ public class JsonKeyValuePairTest {
 		aSet.add(new JsonKeyValuePair("a1", null));
 		JsonKeyValuePair a = new JsonKeyValuePair("a", aSet);
 
-		assertNotEquals(a, "hello");
+		Assertions.assertNotEquals(a, "hello");
 	}
+
 }

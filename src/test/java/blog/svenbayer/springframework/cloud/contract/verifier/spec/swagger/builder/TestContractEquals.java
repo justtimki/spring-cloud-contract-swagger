@@ -1,14 +1,35 @@
 package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder;
 
-import org.junit.jupiter.api.function.Executable;
-import org.springframework.cloud.contract.spec.Contract;
-import org.springframework.cloud.contract.spec.internal.*;
+import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.util.TestUtils.REQUEST_TYPE_HEADER_NAME;
+import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.util.TestUtils.RESPONSE_TYPE_HEADER_NAME;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.*;
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.util.TestUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
-
-import static org.junit.jupiter.api.Assertions.*;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
+import org.junit.jupiter.api.function.Executable;
+import org.springframework.cloud.contract.spec.Contract;
+import org.springframework.cloud.contract.spec.internal.Body;
+import org.springframework.cloud.contract.spec.internal.DslProperty;
+import org.springframework.cloud.contract.spec.internal.Header;
+import org.springframework.cloud.contract.spec.internal.Headers;
+import org.springframework.cloud.contract.spec.internal.QueryParameter;
+import org.springframework.cloud.contract.spec.internal.Request;
+import org.springframework.cloud.contract.spec.internal.Response;
+import org.springframework.cloud.contract.spec.internal.UrlPath;
 
 /**
  * @author Sven Bayer
@@ -17,7 +38,10 @@ public class TestContractEquals {
 
 	private static final String LINE_SEPS = "\\r\\n|\\n|\\r";
 
-	public static void assertContractEquals(Collection<Contract> expected, Collection<Contract> actual) {
+	private static final ObjectMapper objectMapper = new ObjectMapper();
+
+	public static void assertContractEquals(Collection<Contract> expected,
+			Collection<Contract> actual) {
 		final String msg = "Contract List:\n";
 		if (assertBothOrNonNull(expected, actual, msg)) {
 			return;
@@ -32,14 +56,17 @@ public class TestContractEquals {
 		while (expectedIterator.hasNext()) {
 			final Contract expectedNext = expectedIterator.next();
 			final Contract actualNext = actualIterator.next();
-			final String contractMsg = msg + "Contract List Index: " + index.getAndIncrement() + "\n";
-			contractExecutables.add(() -> assertContractEquals(expectedNext, actualNext, contractMsg));
+			final String contractMsg = msg + "Contract List Index: "
+					+ index.getAndIncrement() + "\n";
+			contractExecutables.add(
+					() -> assertContractEquals(expectedNext, actualNext, contractMsg));
 		}
 
 		assertAll("contract list", contractExecutables.stream());
 	}
 
-	private static void assertContractEquals(Contract expected, Contract actual, String msg) {
+	private static void assertContractEquals(Contract expected, Contract actual,
+			String msg) {
 		if (assertBothOrNonNull(expected, actual, msg)) {
 			return;
 		}
@@ -59,7 +86,8 @@ public class TestContractEquals {
 		assertResponseEquals(expected, actual, msg);
 	}
 
-	private static void assertResponseEquals(Contract expected, Contract actual, String msg) {
+	private static void assertResponseEquals(Contract expected, Contract actual,
+			String msg) {
 		msg = msg + "Response:\n";
 		Response actualResponse = actual.getResponse();
 		Response expectedResponse = expected.getResponse();
@@ -67,18 +95,24 @@ public class TestContractEquals {
 			return;
 		}
 
-		assertEquals(expectedResponse.getProperty(), actualResponse.getProperty(), msg);
-		assertEquals(expectedResponse.getHttpStatus(), actualResponse.getHttpStatus(), msg);
-		assertDslPropertyEquals(expectedResponse.getStatus(), actualResponse.getStatus(), msg);
-		assertDslPropertyEquals(expectedResponse.getDelay(), actualResponse.getDelay(), msg);
-		assertHeadersEquals(expectedResponse.getHeaders(), actualResponse.getHeaders(), msg);
+		assertDslPropertyEquals(expectedResponse.getStatus(), actualResponse.getStatus(),
+				msg);
+		assertDslPropertyEquals(expectedResponse.getDelay(), actualResponse.getDelay(),
+				msg);
+		assertHeadersEquals(expectedResponse.getHeaders(), actualResponse.getHeaders(),
+				msg);
 		assertEquals(expectedResponse.getCookies(), actualResponse.getCookies(), msg);
-		assertDslPropertyEquals(expectedResponse.getBody(), actualResponse.getBody(), msg);
+		assertJsonEquals(
+				TestUtils.getHeaderValue(RESPONSE_TYPE_HEADER_NAME,
+						expectedResponse.getHeaders()),
+				expectedResponse.getBody(), actualResponse.getBody(), msg);
 		assertEquals(expectedResponse.isAsync(), actualResponse.isAsync(), msg);
-		assertEquals(expectedResponse.getBodyMatchers(), actualResponse.getBodyMatchers(), msg);
+		assertEquals(expectedResponse.getBodyMatchers(), actualResponse.getBodyMatchers(),
+				msg);
 	}
 
-	private static void assertRequestEquals(Contract expected, Contract actual, String msg) {
+	private static void assertRequestEquals(Contract expected, Contract actual,
+			String msg) {
 		msg = msg + "Request:\n";
 		Request actualRequest = actual.getRequest();
 		Request expectedRequest = expected.getRequest();
@@ -86,37 +120,48 @@ public class TestContractEquals {
 			return;
 		}
 
-		assertEquals(expectedRequest.getProperty(), actualRequest.getProperty(), msg);
-		assertEquals(expectedRequest.getHttpMethods(), actualRequest.getHttpMethods(), msg);
-		assertDslPropertyEquals(expectedRequest.getMethod(), actualRequest.getMethod(), msg);
+		assertDslPropertyEquals(expectedRequest.getMethod(), actualRequest.getMethod(),
+				msg);
 		assertEquals(expectedRequest.getUrl(), actualRequest.getUrl(), msg);
-		assertUrlPathEquals(expectedRequest.getUrlPath(), actualRequest.getUrlPath(), msg);
-		assertHeadersEquals(expectedRequest.getHeaders(), actualRequest.getHeaders(), msg);
+		assertUrlPathEquals(expectedRequest.getUrlPath(), actualRequest.getUrlPath(),
+				msg);
+		assertHeadersEquals(expectedRequest.getHeaders(), actualRequest.getHeaders(),
+				msg);
 		assertEquals(expectedRequest.getCookies(), actualRequest.getCookies(), msg);
-		assertDslPropertyEquals(expectedRequest.getBody(), actualRequest.getBody(), msg);
+		assertJsonEquals(
+				TestUtils.getHeaderValue(REQUEST_TYPE_HEADER_NAME,
+						expectedRequest.getHeaders()),
+				expectedRequest.getBody(), actualRequest.getBody(), msg);
 		assertEquals(expectedRequest.getMultipart(), actualRequest.getMultipart(), msg);
-		assertEquals(expectedRequest.getBodyMatchers(), actualRequest.getBodyMatchers(), msg);
+		assertEquals(expectedRequest.getBodyMatchers(), actualRequest.getBodyMatchers(),
+				msg);
 	}
 
-	private static void assertUrlPathEquals(UrlPath expected, UrlPath actual, String msg) {
+	private static void assertUrlPathEquals(UrlPath expected, UrlPath actual,
+			String msg) {
 		if (assertBothOrNonNull(expected, actual, msg)) {
 			return;
 		}
 
 		assertAll("urlpath",
-				() -> assertPossiblePatternEquals(expected.getClientValue(), actual.getClientValue(), msg + "ClientValue:\n"),
-				() -> assertPossiblePatternEquals(expected.getServerValue(), actual.getServerValue(), msg + "ServerValue:\n")
-		);
+				() -> assertPossiblePatternEquals(expected.getClientValue(),
+						actual.getClientValue(), msg + "ClientValue:\n"),
+				() -> assertPossiblePatternEquals(expected.getServerValue(),
+						actual.getServerValue(), msg + "ServerValue:\n"));
 
 		assertQueryParametersEquals(expected, actual, msg);
 	}
 
-	private static void assertQueryParametersEquals(UrlPath expected, UrlPath actual, String msg) {
-		if (assertBothOrNonNull(expected.getQueryParameters(), actual.getQueryParameters(), msg)) {
+	private static void assertQueryParametersEquals(UrlPath expected, UrlPath actual,
+			String msg) {
+		if (assertBothOrNonNull(expected.getQueryParameters(),
+				actual.getQueryParameters(), msg)) {
 			return;
 		}
-		List<QueryParameter> expectedParameters = expected.getQueryParameters().getParameters();
-		List<QueryParameter> actualParameters = actual.getQueryParameters().getParameters();
+		List<QueryParameter> expectedParameters = expected.getQueryParameters()
+				.getParameters();
+		List<QueryParameter> actualParameters = actual.getQueryParameters()
+				.getParameters();
 		if (assertBothOrNonNull(expectedParameters, actualParameters, msg)) {
 			return;
 		}
@@ -131,41 +176,52 @@ public class TestContractEquals {
 
 			queryParameterExecutables.add(() -> {
 				assertEquals(expectedParameter.getName(), actualParameter.getName(), msg);
-				final String queryMsg = baseMsg + "QueryParameter: " + expectedParameter.getName() + "\n";
+				final String queryMsg = baseMsg + "QueryParameter: "
+						+ expectedParameter.getName() + "\n";
 
 				assertAll("query parameter",
-						() -> assertPossiblePatternEquals(expectedParameter.getClientValue(), actualParameter.getClientValue(), queryMsg + "ClientValue:\n"),
-						() -> assertPossiblePatternEquals(expectedParameter.getServerValue(), actualParameter.getServerValue(), queryMsg + "ServerValue:\n")
-				);
-				assertEquals(expectedParameter.isSingleValue(), actualParameter.isSingleValue(), msg);
+						() -> assertPossiblePatternEquals(
+								expectedParameter.getClientValue(),
+								actualParameter.getClientValue(),
+								queryMsg + "ClientValue:\n"),
+						() -> assertPossiblePatternEquals(
+								expectedParameter.getServerValue(),
+								actualParameter.getServerValue(),
+								queryMsg + "ServerValue:\n"));
+				assertEquals(expectedParameter.isSingleValue(),
+						actualParameter.isSingleValue(), msg);
 			});
 		}
 		assertAll("query parameters", queryParameterExecutables.stream());
 	}
 
-	static void assertDslPropertyEquals(DslProperty expected, DslProperty actual, String msg) {
+	static void assertDslPropertyEquals(DslProperty expected, DslProperty actual,
+			String msg) {
 		if (assertBothOrNonNull(expected, actual, msg)) {
 			return;
 		}
 
 		assertAll("dsl property",
-				() -> assertPossiblePatternEquals(expected.getClientValue(), actual.getClientValue(), msg + "ClientValue:\n"),
-				() -> assertPossiblePatternEquals(expected.getServerValue(), actual.getServerValue(), msg + "ServerValue:\n")
-		);
+				() -> assertPossiblePatternEquals(expected.getClientValue(),
+						actual.getClientValue(), msg + "ClientValue:\n"),
+				() -> assertPossiblePatternEquals(expected.getServerValue(),
+						actual.getServerValue(), msg + "ServerValue:\n"));
 		assertEquals(expected.isSingleValue(), actual.isSingleValue(), msg);
 	}
 
-	private static void assertHeadersEquals(Headers expected, Headers actual, String msg) {
+	private static void assertHeadersEquals(Headers expected, Headers actual,
+			String msg) {
 		if (assertBothOrNonNull(expected, actual, msg)) {
 			return;
 		}
 		assertHeaderEquals(expected.getEntries(), actual.getEntries(), msg);
-		assertEquals(expected.getHttpHeaders(), actual.getHttpHeaders(), msg);
-		assertEquals(expected.getMediaTypes(), actual.getMediaTypes(), msg);
-		assertEquals(expected.getMessagingHeaders(), actual.getMessagingHeaders(), msg);
+
+		assertEquals(expected.contentType(), actual.contentType(), msg);
+		assertEquals(expected.messagingContentType(), actual.messagingContentType(), msg);
 	}
 
-	private static void assertHeaderEquals(Set<Header> expected, Set<Header> actual, String msg) {
+	private static void assertHeaderEquals(Set<Header> expected, Set<Header> actual,
+			String msg) {
 		if (assertBothOrNonNull(expected, actual, msg)) {
 			return;
 		}
@@ -179,51 +235,84 @@ public class TestContractEquals {
 
 			headerExecutables.add(() -> {
 				assertEquals(expectedHeader.getName(), actualHeader.getName(), msg);
-				final String headerMsg = msg + "Header: " + expectedHeader.getName() + "\n";
+				final String headerMsg = msg + "Header: " + expectedHeader.getName()
+						+ "\n";
 				assertAll("header",
-						() -> assertPossiblePatternEquals(expectedHeader.getClientValue(), actualHeader.getClientValue(), headerMsg + "ClientValue:\n"),
-						() -> assertPossiblePatternEquals(expectedHeader.getServerValue(), actualHeader.getServerValue(), headerMsg + "ServerValue:\n")
-				);
+						() -> assertPossiblePatternEquals(expectedHeader.getClientValue(),
+								actualHeader.getClientValue(),
+								headerMsg + "ClientValue:\n"),
+						() -> assertPossiblePatternEquals(expectedHeader.getServerValue(),
+								actualHeader.getServerValue(),
+								headerMsg + "ServerValue:\n"));
 			});
 		}
 		assertAll("header", headerExecutables.stream());
 	}
 
-	private static void assertPossiblePatternEquals(Object expected, Object actual, String msg) {
+	private static void assertJsonEquals(String headerValue, final Object expected,
+			final Object actual, final String msg) {
+		if (expected instanceof Body) {
+			try {
+				final Object expectedObject = objectMapper.readValue(
+						((Body) expected).getClientValue().toString(),
+						Class.forName(headerValue));
+				final Object actualObject = objectMapper.readValue(
+						((Body) actual).getClientValue().toString(),
+						Class.forName(headerValue));
+
+				assertEquals(expectedObject, actualObject, msg);
+			}
+			catch (JsonProcessingException | ClassNotFoundException e) {
+				fail();
+			}
+		}
+	}
+
+	private static void assertPossiblePatternEquals(Object expected, Object actual,
+			String msg) {
 		if (expected instanceof Pattern) {
 			msg = msg + "Pattern:\n";
 			assertEquals(Pattern.class, actual.getClass(), msg);
 			Pattern expectedPattern = (Pattern) expected;
 			Pattern actualPattern = (Pattern) actual;
 			assertEquals(expectedPattern.pattern(), actualPattern.pattern(), msg);
-		} else if (expected instanceof DslProperty) {
+		}
+		else if (expected instanceof DslProperty) {
 			msg = msg + "DslProperty:\n";
 			DslProperty expectedDslProperty = (DslProperty) expected;
 			DslProperty actualDslProperty = (DslProperty) actual;
 			assertDslPropertyEquals(expectedDslProperty, actualDslProperty, msg);
-		} else {
+		}
+		else {
 			assertEqualsNoLineSeparator(expected, actual, msg);
 		}
 	}
 
-	private static boolean assertBothOrNonNull(Object expected, Object actual, String msg) {
+	private static boolean assertBothOrNonNull(Object expected, Object actual,
+			String msg) {
 		if (expected == null) {
 			assertNull(actual, msg);
 			return true;
-		} else {
+		}
+		else {
 			assertNotNull(actual, msg);
 			return false;
 		}
 	}
 
-	private static void assertEqualsNoLineSeparator(Object expected, Object actual, String msg) {
+	private static void assertEqualsNoLineSeparator(Object expected, Object actual,
+			String msg) {
 		if (expected == null) {
 			assertNull(actual, msg);
-		} else {
+		}
+		else {
 			assertNotNull(actual, msg);
-			String cleanedUpExpected = expected.toString().replaceAll(LINE_SEPS, System.lineSeparator());
-			String cleanedUpActual = actual.toString().replaceAll(LINE_SEPS, System.lineSeparator());
+			String cleanedUpExpected = expected.toString().replaceAll(LINE_SEPS,
+					System.lineSeparator());
+			String cleanedUpActual = actual.toString().replaceAll(LINE_SEPS,
+					System.lineSeparator());
 			assertEquals(cleanedUpExpected, cleanedUpActual, msg);
 		}
 	}
+
 }

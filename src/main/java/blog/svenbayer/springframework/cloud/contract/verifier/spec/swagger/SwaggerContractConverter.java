@@ -1,19 +1,20 @@
-package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger;
+/*
+ * Copyright 2020-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.*;
-import groovy.lang.Closure;
-import io.swagger.models.HttpMethod;
-import io.swagger.models.Operation;
-import io.swagger.models.Response;
-import io.swagger.models.Swagger;
-import io.swagger.models.parameters.*;
-import io.swagger.parser.SwaggerParser;
-import org.springframework.cloud.contract.spec.Contract;
-import org.springframework.cloud.contract.spec.ContractConverter;
-import org.springframework.cloud.contract.spec.internal.DslProperty;
-import org.springframework.cloud.contract.spec.internal.Headers;
-import org.springframework.cloud.contract.spec.internal.QueryParameters;
-import org.springframework.cloud.contract.spec.internal.Request;
+package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger;
 
 import java.io.File;
 import java.util.Collection;
@@ -22,10 +23,34 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerFields.X_IGNORE;
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.ContractNameBuilder;
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.DslValueBuilder;
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.RequestBodyParamBuilder;
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.ResponseBodyBuilder;
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.ResponseHeaderValueBuilder;
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerFields;
+import groovy.lang.Closure;
+import io.swagger.models.HttpMethod;
+import io.swagger.models.Operation;
+import io.swagger.models.Response;
+import io.swagger.models.Swagger;
+import io.swagger.models.parameters.AbstractSerializableParameter;
+import io.swagger.models.parameters.BodyParameter;
+import io.swagger.models.parameters.HeaderParameter;
+import io.swagger.models.parameters.Parameter;
+import io.swagger.models.parameters.PathParameter;
+import io.swagger.models.parameters.QueryParameter;
+import io.swagger.parser.SwaggerParser;
+
+import org.springframework.cloud.contract.spec.Contract;
+import org.springframework.cloud.contract.spec.ContractConverter;
+import org.springframework.cloud.contract.spec.internal.DslProperty;
+import org.springframework.cloud.contract.spec.internal.Headers;
+import org.springframework.cloud.contract.spec.internal.QueryParameters;
+import org.springframework.cloud.contract.spec.internal.Request;
 
 /**
- * Converts a Swagger contract to a Spring Cloud contract
+ * Converts a Swagger contract to a Spring Cloud contract.
  *
  * @author Sven Bayer
  */
@@ -33,15 +58,18 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 
 	private static final String TAG_SEP = "_";
 
-	private ResponseHeaderValueBuilder responseHeaderValueBuilder = new ResponseHeaderValueBuilder();
-	private RequestBodyParamBuilder requestBodyParamBuilder = new RequestBodyParamBuilder();
-	private ResponseBodyBuilder responseBodyBuilder = new ResponseBodyBuilder();
-	private DslValueBuilder dslValueBuilder = new DslValueBuilder();
-	private ContractNameBuilder contractNameBuilder = new ContractNameBuilder();
+	private final ResponseHeaderValueBuilder responseHeaderValueBuilder = new ResponseHeaderValueBuilder();
+
+	private final RequestBodyParamBuilder requestBodyParamBuilder = new RequestBodyParamBuilder();
+
+	private final ResponseBodyBuilder responseBodyBuilder = new ResponseBodyBuilder();
+
+	private final DslValueBuilder dslValueBuilder = new DslValueBuilder();
+
+	private final ContractNameBuilder contractNameBuilder = new ContractNameBuilder();
 
 	/**
 	 * Checks if the given file is a Swagger file.
-	 *
 	 * @param file the file to check
 	 * @return true if the file is a Swagger file
 	 */
@@ -50,14 +78,14 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 		try {
 			Swagger swagger = new SwaggerParser().read(file.getPath());
 			return swagger != null;
-		} catch (Exception ignore) {
+		}
+		catch (Exception ignore) {
 			return false;
 		}
 	}
 
 	/**
 	 * Converts a Swagger file to Spring Cloud contracts.
-	 *
 	 * @param file the Swagger file
 	 * @return the Spring Cloud contracts
 	 */
@@ -69,26 +97,25 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 		}
 		SwaggerFileFolder.instance().setPathToSwaggerFile(file.getParentFile().toPath());
 		final AtomicInteger priority = new AtomicInteger(1);
-		return swagger.getPaths().entrySet().stream()
-				.flatMap(pathEntry -> {
-					String pathLink = pathEntry.getKey();
-					return pathEntry.getValue().getOperationMap().entrySet().stream()
-							.map(operationEntry -> createContract(swagger, priority, pathLink, operationEntry));
-				})
-				.filter(contract -> !contract.isIgnored())
-				.collect(Collectors.toList());
+		return swagger.getPaths().entrySet().stream().flatMap(pathEntry -> {
+			String pathLink = pathEntry.getKey();
+			return pathEntry.getValue().getOperationMap().entrySet().stream()
+					.map(operationEntry -> createContract(swagger, priority, pathLink,
+							operationEntry));
+		}).filter(contract -> !contract.isIgnored()).collect(Collectors.toList());
 	}
 
 	/**
-	 * Creates the Spring Cloud contract for the given path and operation of the Swagger document.
-	 *
+	 * Creates the Spring Cloud contract for the given path and operation of the Swagger
+	 * document.
 	 * @param swagger the Swagger document
 	 * @param priority the index of the path and operation
 	 * @param pathLink the path url
 	 * @param operationEntry the operation (GET, POST, PUT, DELETE)
 	 * @return the Spring Cloud contract
 	 */
-	private Contract createContract(Swagger swagger, AtomicInteger priority, String pathLink, Map.Entry<HttpMethod, Operation> operationEntry) {
+	private Contract createContract(Swagger swagger, AtomicInteger priority,
+			String pathLink, Map.Entry<HttpMethod, Operation> operationEntry) {
 		Contract contract = Contract.make(Closure.IDENTITY);
 
 		createMetaData(priority, pathLink, operationEntry, contract);
@@ -103,17 +130,19 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 	}
 
 	/**
-	 * Sets meta data from a Swagger operation for a Spring Cloud contract, like name, description, label, priority, ignored.
-	 *
+	 * Sets meta data from a Swagger operation for a Spring Cloud contract, like name,
+	 * description, label, priority, ignored.
 	 * @param priority the index of the path and operation
 	 * @param pathLink the path url
 	 * @param operationEntry the operation (GET, POST, PUT, DELETE)
 	 * @param contract the Spring Cloud contract to modify
 	 */
-	private void createMetaData(AtomicInteger priority, String pathLink, Map.Entry<HttpMethod, Operation> operationEntry, Contract contract) {
+	private void createMetaData(AtomicInteger priority, String pathLink,
+			Map.Entry<HttpMethod, Operation> operationEntry, Contract contract) {
 		Operation operation = operationEntry.getValue();
 
-		String contractName = this.contractNameBuilder.createContractName(priority, pathLink, operationEntry.getKey());
+		String contractName = this.contractNameBuilder.createContractName(priority,
+				pathLink, operationEntry.getKey());
 		contract.setName(contractName);
 
 		if (operation.getDescription() != null) {
@@ -124,17 +153,15 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 		}
 
 		contract.setPriority(priority.getAndIncrement());
-		if (operation.getVendorExtensions() != null && operation.getVendorExtensions().get(X_IGNORE.field()) != null
-				&& Boolean.class.cast(operation.getVendorExtensions().get(X_IGNORE.field()))) {
-			contract.setIgnored(true);
-		} else {
-			contract.setIgnored(false);
-		}
+		contract.setIgnored(operation.getVendorExtensions() != null
+				&& operation.getVendorExtensions()
+						.get(SwaggerFields.X_IGNORE.field()) != null
+				&& (Boolean) operation.getVendorExtensions()
+						.get(SwaggerFields.X_IGNORE.field()));
 	}
 
 	/**
 	 * Sets the response data for the Spring Cloud contract for the given operation.
-	 *
 	 * @param swagger the Swagger document
 	 * @param contract the Spring Cloud contract
 	 * @param operation the operation (GET, POST, PUT, DELETE)
@@ -143,9 +170,10 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 		org.springframework.cloud.contract.spec.internal.Response response = new org.springframework.cloud.contract.spec.internal.Response();
 		contract.setResponse(response);
 
-		Map.Entry<String, Response> responseEntry = operation.getResponses().entrySet().iterator().next();
+		Map.Entry<String, Response> responseEntry = operation.getResponses().entrySet()
+				.iterator().next();
 		String responseStatus = responseEntry.getKey();
-		response.status(Integer.valueOf(responseStatus));
+		response.status(Integer.parseInt(responseStatus));
 
 		response.headers(Closure.IDENTITY);
 		Headers responseHeaders = response.getHeaders();
@@ -153,7 +181,9 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 		if (responseEntry.getValue().getHeaders() != null) {
 			responseEntry.getValue().getHeaders().forEach((key, value) -> {
 				if (key != null) {
-					DslProperty serverValue = this.responseHeaderValueBuilder.createDslResponseHeaderValue(key, value, swagger.getDefinitions());
+					DslProperty serverValue = this.responseHeaderValueBuilder
+							.createDslResponseHeaderValue(key, value,
+									swagger.getDefinitions());
 					responseHeaders.header(key, serverValue);
 				}
 			});
@@ -162,7 +192,8 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 			operation.getProduces().forEach(contentType -> {
 				if (contentType.equals("*/*")) {
 					responseHeaders.contentType("*/*");
-				} else {
+				}
+				else {
 					responseHeaders.contentType(contentType);
 				}
 			});
@@ -170,20 +201,21 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 
 		// Cookie parameters are not supported by Swagger 2.0 ?
 		if (responseEntry.getValue().getResponseSchema() != null) {
-			String bodyValue = this.responseBodyBuilder.createValueForResponseBody(responseEntry.getValue(), swagger.getDefinitions());
+			String bodyValue = this.responseBodyBuilder.createValueForResponseBody(
+					responseEntry.getValue(), swagger.getDefinitions());
 			response.body(bodyValue);
 		}
 	}
 
 	/**
-	 * Sets the request data for the given operation.entry
-	 *
+	 * Sets the request data for the given operation.entry.
 	 * @param swagger the Swagger document
 	 * @param pathLink the path url
 	 * @param operationEntry the operation (GET, PUT, POST, DELETE)
 	 * @param contract the Spring Cloud contract
 	 */
-	private void createRequest(Swagger swagger, String pathLink, Map.Entry<HttpMethod, Operation> operationEntry, Contract contract) {
+	private void createRequest(Swagger swagger, String pathLink,
+			Map.Entry<HttpMethod, Operation> operationEntry, Contract contract) {
 		Operation operation = operationEntry.getValue();
 		final Request request = new Request();
 		contract.setRequest(request);
@@ -199,14 +231,16 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 				operation.getParameters().stream()
 						.filter(param -> param instanceof PathParameter)
 						.map(AbstractSerializableParameter.class::cast)
-						.forEach(param -> request.urlPath(request.getUrlPath().getClientValue().toString().replace("{" + param.getName() + "}", param.getName())));
+						.forEach(param -> request.urlPath(
+								request.getUrlPath().getClientValue().toString().replace(
+										"{" + param.getName() + "}", param.getName())));
 				final QueryParameters queryParameters = new QueryParameters();
 				request.getUrlPath().setQueryParameters(queryParameters);
 				operation.getParameters().stream()
 						.filter(param -> param instanceof QueryParameter)
-						.map(AbstractSerializableParameter.class::cast)
-						.forEach(param -> {
-							DslProperty<Object> value = this.dslValueBuilder.createDslValueForParameter(param);
+						.map(AbstractSerializableParameter.class::cast).forEach(param -> {
+							DslProperty<Object> value = this.dslValueBuilder
+									.createDslValueForParameter(param);
 							if (value != null) {
 								queryParameters.parameter(param.getName(), value);
 							}
@@ -219,23 +253,26 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 
 	/**
 	 * Creates headers for the request.
-	 *
 	 * @param swagger the Swagger document
 	 * @param operation the operation (GET, PUT, POST, DELETE)
 	 * @param request the contract request
 	 */
-	private void createRequestHeaders(Swagger swagger, Operation operation, Request request) {
+	private void createRequestHeaders(Swagger swagger, Operation operation,
+			Request request) {
 		request.headers(Closure.IDENTITY);
 		Headers requestHeaders = request.getHeaders();
 
 		if (operation.getParameters() != null) {
-			operation.getParameters().forEach(param -> createRequestHeaderBodyParameters(swagger, request, requestHeaders, param));
+			operation.getParameters()
+					.forEach(param -> createRequestHeaderBodyParameters(swagger, request,
+							requestHeaders, param));
 		}
 		if (operation.getConsumes() != null) {
 			operation.getConsumes().forEach(contentType -> {
 				if (contentType.equals("*/*")) {
 					requestHeaders.contentType("");
-				} else {
+				}
+				else {
 					requestHeaders.contentType(contentType);
 				}
 			});
@@ -243,25 +280,27 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 	}
 
 	/**
-	 * Create the parameters for request header and body
-	 *
+	 * Create the parameters for request header and body.
 	 * @param swagger the Swagger document
 	 * @param request the contract request
 	 * @param requestHeaders the contract headers
 	 * @param param the Swagger parameters
 	 */
-	private void createRequestHeaderBodyParameters(Swagger swagger, Request request, Headers requestHeaders, Parameter param) {
+	private void createRequestHeaderBodyParameters(Swagger swagger, Request request,
+			Headers requestHeaders, Parameter param) {
 		if (param instanceof HeaderParameter) {
-			HeaderParameter headerParameter = HeaderParameter.class.cast(param);
-			DslProperty clientValue = this.dslValueBuilder.createDslValueForParameter(headerParameter);
+			HeaderParameter headerParameter = (HeaderParameter) param;
+			DslProperty clientValue = this.dslValueBuilder
+					.createDslValueForParameter(headerParameter);
 			if (clientValue != null && headerParameter.getName() != null) {
 				requestHeaders.header(headerParameter.getName(), clientValue);
 			}
 		}
 		// Cookie parameters are not supported by Swagger 2.0
 		if (param instanceof BodyParameter) {
-			BodyParameter bodyParameter = BodyParameter.class.cast(param);
-			String value = this.requestBodyParamBuilder.createValueForRequestBody(bodyParameter, swagger.getDefinitions());
+			BodyParameter bodyParameter = (BodyParameter) param;
+			String value = this.requestBodyParamBuilder
+					.createValueForRequestBody(bodyParameter, swagger.getDefinitions());
 			if (value != null) {
 				request.body(value);
 			}
@@ -270,7 +309,6 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 
 	/**
 	 * This is not supported!
-	 *
 	 * @param contract the contract that will not be converted
 	 * @return an empty Swagger document
 	 */
@@ -278,4 +316,5 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 	public Swagger convertTo(Collection<Contract> contract) {
 		return new Swagger();
 	}
+
 }

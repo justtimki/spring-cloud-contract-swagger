@@ -1,9 +1,22 @@
+/*
+ * Copyright 2020-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields;
 
 import java.math.BigDecimal;
-
-import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerFormats.*;
-import static blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.valuefields.SwaggerTypes.*;
 
 /**
  * Default values that we set in a Spring Cloud Contract if no example value is set.
@@ -39,7 +52,6 @@ public final class DefaultValues {
 
 	/**
 	 * Creates a default value for a given parameter.
-	 *
 	 * @param type the primitive type
 	 * @param format the specific format
 	 * @param name the name of the parameter
@@ -47,12 +59,14 @@ public final class DefaultValues {
 	 * @param max maximum value
 	 * @return the default value
 	 */
-	public Object createDefaultValueForType(String type, String format, String name, BigDecimal min, BigDecimal max) {
-		if (STRING.type().equals(type)) {
+	public Object createDefaultValueForType(String type, String format, String name,
+			BigDecimal min, BigDecimal max) {
+		if (SwaggerTypes.STRING.type().equals(type)) {
 			if (name != null && !name.isEmpty()) {
 				return name;
-			} else {
-				return STRING.type();
+			}
+			else {
+				return SwaggerTypes.STRING.type();
 			}
 		}
 		Object numericalValue = getNumericalValue(type, format, min, max);
@@ -67,14 +81,16 @@ public final class DefaultValues {
 		if (longValue != null) {
 			return longValue;
 		}
-		if (BOOLEAN.type().equals(type)) {
+		if (SwaggerTypes.BOOLEAN.type().equals(type)) {
 			return DEFAULT_BOOLEAN;
 		}
 		return DEFAULT_INT;
 	}
 
-	private Object getIntValue(String type, String format, BigDecimal min, BigDecimal max) {
-		if (INTEGER.type().equals(type) && INT_64.format().equals(format)) {
+	private Object getIntValue(String type, String format, BigDecimal min,
+			BigDecimal max) {
+		if (SwaggerTypes.INTEGER.type().equals(type)
+				&& SwaggerFormats.INT_64.format().equals(format)) {
 			if (min != null) {
 				return min.longValue();
 			}
@@ -86,8 +102,10 @@ public final class DefaultValues {
 		return null;
 	}
 
-	private Object getLongValue(String type, String format, BigDecimal min, BigDecimal max) {
-		if (INTEGER.type().equals(type) && (INT_32.format().equals(format) || format == null)) {
+	private Object getLongValue(String type, String format, BigDecimal min,
+			BigDecimal max) {
+		if (SwaggerTypes.INTEGER.type().equals(type)
+				&& (SwaggerFormats.INT_32.format().equals(format) || format == null)) {
 			if (min != null) {
 				return min.intValue();
 			}
@@ -99,8 +117,10 @@ public final class DefaultValues {
 		return null;
 	}
 
-	private Object getNumericalValue(String type, String format, BigDecimal min, BigDecimal max) {
-		if (NUMBER.type().equals(type) && (DOUBLE.format().equals(format) || format == null)) {
+	private Object getNumericalValue(String type, String format, BigDecimal min,
+			BigDecimal max) {
+		if (SwaggerTypes.NUMBER.type().equals(type)
+				&& (SwaggerFormats.DOUBLE.format().equals(format) || format == null)) {
 			if (min != null) {
 				return min.doubleValue();
 			}
@@ -109,7 +129,8 @@ public final class DefaultValues {
 			}
 			return DEFAULT_DOUBLE;
 		}
-		if (NUMBER.type().equals(type) && FLOAT.format().equals(format)) {
+		if (SwaggerTypes.NUMBER.type().equals(type)
+				&& SwaggerFormats.FLOAT.format().equals(format)) {
 			if (min != null) {
 				return min.floatValue();
 			}
@@ -120,4 +141,5 @@ public final class DefaultValues {
 		}
 		return null;
 	}
+
 }

@@ -1,15 +1,14 @@
 package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.exception.SwaggerContractConverterException;
 import io.swagger.models.HttpMethod;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Sven Bayer
@@ -20,7 +19,7 @@ public class ContractNameBuilderTest {
 
 	@Before
 	public void init() {
-	    contractNameBuilder = new ContractNameBuilder();
+		contractNameBuilder = new ContractNameBuilder();
 	}
 
 	@DisplayName("Escapes path for Contract name with path parameter and slashes")
@@ -29,7 +28,8 @@ public class ContractNameBuilderTest {
 		String pathName = "/find/planets/{solarSystem}/{system}";
 		AtomicInteger priority = new AtomicInteger(1);
 		HttpMethod post = HttpMethod.POST;
-		String contractName = contractNameBuilder.createContractName(priority, pathName, post);
+		String contractName = contractNameBuilder.createContractName(priority, pathName,
+				post);
 		assertEquals("1_find_planets_solarSystem_system_POST", contractName);
 	}
 
@@ -39,9 +39,11 @@ public class ContractNameBuilderTest {
 		String pathName = "";
 		AtomicInteger priority = new AtomicInteger(1);
 		HttpMethod post = HttpMethod.POST;
-		SwaggerContractConverterException exception = assertThrows(SwaggerContractConverterException.class, () -> {
-			contractNameBuilder.createContractName(priority, pathName, post);
-		});
-		assertEquals("Could not extract path of method from Swagger file: ", exception.getMessage());
+		SwaggerContractConverterException exception = assertThrows(
+				SwaggerContractConverterException.class,
+				() -> contractNameBuilder.createContractName(priority, pathName, post));
+		assertEquals("Could not extract path of method from Swagger file: ",
+				exception.getMessage());
 	}
+
 }

@@ -56,6 +56,20 @@ paths:
           required: false
           type: string
           x-example: "123456"
+#       for test purpose
+        - name: X-Test-ResponseType
+          in: header
+          description: ResponseType
+          required: true
+          type: string
+          x-example: BeanName
+        - name: X-Test-RequestType
+          in: header
+          description: RequestType
+          required: true
+          type: string
+          x-example: CoffeeRocket
+#       end test purpose
       responses:
         '201':
           description: Created
@@ -63,6 +77,9 @@ paths:
             X-RateLimit-Limit:
               type: integer
               description: Request limit per hour.
+            X-Test-RequestType:
+              type: string
+              x-example: CoffeeRocket
           schema:
             $ref: '#/definitions/BeanName'
         '401':

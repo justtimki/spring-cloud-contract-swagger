@@ -1,11 +1,27 @@
-package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder;
+/*
+ * Copyright 2020-2020 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.exception.SwaggerContractConverterException;
-import io.swagger.models.HttpMethod;
+package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.exception.SwaggerContractConverterException;
+import io.swagger.models.HttpMethod;
 
 /**
  * Builds a contract name for a given path and http method.
@@ -17,7 +33,8 @@ public class ContractNameBuilder {
 	private static final String PATH_SEP = "_";
 
 	/**
-	 * Extract the path without the leading slash and without the last closing curly-brace
+	 * Extract the path without the leading slash and without the last closing
+	 * curly-brace.
 	 */
 	private static final String PATH_EXTRACT = "([^\\/].*[^\\}])";
 
@@ -28,19 +45,21 @@ public class ContractNameBuilder {
 
 	/**
 	 * Creates a contract name for a given path and http method.
-	 *
 	 * @param priority the order of the method
 	 * @param pathLink the path of the endpoint
 	 * @param httpMethod the operation (GET, POST, PUT, DELETE)
 	 * @return the formatted contract name
 	 */
-	public String createContractName(AtomicInteger priority, String pathLink, HttpMethod httpMethod) {
+	public String createContractName(AtomicInteger priority, String pathLink,
+			HttpMethod httpMethod) {
 		Matcher pathMatcher = Pattern.compile(PATH_EXTRACT).matcher(pathLink);
 		if (!pathMatcher.find()) {
-			throw new SwaggerContractConverterException("Could not extract path of method from Swagger file: " + pathLink);
+			throw new SwaggerContractConverterException(
+					"Could not extract path of method from Swagger file: " + pathLink);
 		}
 		String extractedPath = pathMatcher.group(1);
 		String cleanedUpPathLink = extractedPath.replaceAll(PATH_CLEANUP, PATH_SEP);
 		return priority + PATH_SEP + cleanedUpPathLink + PATH_SEP + httpMethod.name();
 	}
+
 }

@@ -83,8 +83,11 @@ public class NumericPropertyValueBuilderTest {
 	@DisplayName("Value for unknown property type")
 	@Test
 	public void unknownPropertyType() {
-		AbstractNumericProperty property = new AbstractNumericProperty() {};
-		Object actualValue = builder.getTypedNumericValue(property, BigDecimal.valueOf(1));
+		AbstractNumericProperty property = new AbstractNumericProperty() {
+		};
+		Object actualValue = builder.getTypedNumericValue(property,
+				BigDecimal.valueOf(1));
 		assertEquals(1, actualValue);
 	}
+
 }

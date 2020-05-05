@@ -33,14 +33,16 @@ public class PatternBuilderTest {
 	@DisplayName("Double matches pattern")
 	@Test
 	public void numberDoubleMatchesPattern() {
-		Pattern pattern = patternBuilder.createPatternForParameter(NUMBER.type(), DOUBLE.format());
+		Pattern pattern = patternBuilder.createPatternForParameter(NUMBER.type(),
+				DOUBLE.format());
 		assertTrue(pattern.matcher("1.1").matches());
 	}
 
 	@DisplayName("Float matches pattern")
 	@Test
 	public void numberFloatMatchesPattern() {
-		Pattern pattern = patternBuilder.createPatternForParameter(NUMBER.type(), FLOAT.format());
+		Pattern pattern = patternBuilder.createPatternForParameter(NUMBER.type(),
+				FLOAT.format());
 		assertTrue(pattern.matcher("1.1").matches());
 	}
 
@@ -57,4 +59,5 @@ public class PatternBuilderTest {
 		Pattern pattern = patternBuilder.createPatternForParameter(BOOLEAN.type(), null);
 		assertTrue(pattern.matcher("false").matches());
 	}
+
 }

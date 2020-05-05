@@ -14,7 +14,8 @@ public class TestFileResourceLoader {
 		ClassLoader classLoader = TestFileResourceLoader.class.getClassLoader();
 		URL resource = classLoader.getResource(resourcePath);
 		if (resource == null) {
-			throw new IllegalStateException("Resource should not be null but was for '" + resourcePath + "'");
+			throw new IllegalStateException(
+					"Resource should not be null but was for '" + resourcePath + "'");
 		}
 		return new File(resource.getFile());
 	}
@@ -22,4 +23,5 @@ public class TestFileResourceLoader {
 	public static String getResourceAsString(String resourcePath) throws IOException {
 		return new String(Files.readAllBytes(getResourceAsFile(resourcePath).toPath()));
 	}
+
 }
