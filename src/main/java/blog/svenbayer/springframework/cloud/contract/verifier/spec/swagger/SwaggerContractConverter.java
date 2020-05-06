@@ -42,6 +42,7 @@ import io.swagger.models.parameters.Parameter;
 import io.swagger.models.parameters.PathParameter;
 import io.swagger.models.parameters.QueryParameter;
 import io.swagger.parser.SwaggerParser;
+
 import org.springframework.cloud.contract.spec.Contract;
 import org.springframework.cloud.contract.spec.ContractConverter;
 import org.springframework.cloud.contract.spec.internal.DslProperty;
@@ -230,8 +231,8 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 				operation.getParameters().stream()
 						.filter(param -> param instanceof PathParameter)
 						.map(PathParameter.class::cast)
-						.forEach(param -> request.urlPath(
-								request.getUrlPath().getClientValue().toString()
+						.forEach(param -> request
+								.urlPath(request.getUrlPath().getClientValue().toString()
 										.replace("{" + param.getName() + "}",
 												extractExample(param))));
 
@@ -240,12 +241,12 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 				operation.getParameters().stream()
 						.filter(param -> param instanceof QueryParameter)
 						.map(AbstractSerializableParameter.class::cast).forEach(param -> {
-					DslProperty<Object> value = this.dslValueBuilder
-							.createDslValueForParameter(param);
-					if (value != null) {
-						queryParameters.parameter(param.getName(), value);
-					}
-				});
+							DslProperty<Object> value = this.dslValueBuilder
+									.createDslValueForParameter(param);
+							if (value != null) {
+								queryParameters.parameter(param.getName(), value);
+							}
+						});
 			}
 		}
 
@@ -254,16 +255,14 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 
 	private String extractExample(final PathParameter parameter) {
 		return Optional.ofNullable(parameter.getVendorExtensions().get("x-example"))
-				.map(String.class::cast)
-				.orElse(parameter.getName());
+				.map(String.class::cast).orElse(parameter.getName());
 	}
 
 	/**
 	 * Creates headers for the request.
-	 *
-	 * @param swagger   the Swagger document
+	 * @param swagger the Swagger document
 	 * @param operation the operation (GET, PUT, POST, DELETE)
-	 * @param request   the contract request
+	 * @param request the contract request
 	 */
 	private void createRequestHeaders(Swagger swagger, Operation operation,
 			Request request) {

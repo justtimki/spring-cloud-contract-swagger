@@ -38,7 +38,7 @@
 
     <scm>
         <connection>scm:git:git://github.com/justtimki/spring-cloud-contract-swagger.git</connection>
-        <developerConnection>scm:git:ssh://github.com:justtimki/spring-cloud-contract-swagger.git</developerConnection>
+        <developerConnection>scm:git:ssh://github.com/justtimki/spring-cloud-contract-swagger.git</developerConnection>
         <url>http://github.com/justtimki/spring-cloud-contract-swagger/tree/master</url>
     </scm>
 
