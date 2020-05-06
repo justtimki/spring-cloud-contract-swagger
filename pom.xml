@@ -9,14 +9,14 @@
         <version>2.2.2.RELEASE</version>
     </parent>
 
-    <groupId>com.kalymaha</groupId>
+    <groupId>io.github.justtimki</groupId>
     <artifactId>spring-cloud-contract-swagger</artifactId>
     <version>1.2.1.BUILD-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>blog.svenbayer:spring-cloud-contract-swagger</name>
+    <name>io.github.justtimki:spring-cloud-contract-swagger</name>
     <description>Spring Cloud Contract Swagger</description>
-    <url>https://github.com/SvenBayer/spring-cloud-contract-swagger</url>
+    <url>https://github.com/justtimki/spring-cloud-contract-swagger</url>
 
     <inceptionYear>2018</inceptionYear>
 
@@ -36,9 +36,9 @@
     </developers>
 
     <scm>
-        <connection>scm:git:git://github.com/SvenBayer/spring-cloud-contract-swagger.git</connection>
-        <developerConnection>scm:git:ssh://github.com:SvenBayer/spring-cloud-contract-swagger.git</developerConnection>
-        <url>http://github.com/SvenBayer/spring-cloud-contract-swagger/tree/master</url>
+        <connection>scm:git:git://github.com/justtimki/spring-cloud-contract-swagger.git</connection>
+        <developerConnection>scm:git:ssh://github.com:justtimki/spring-cloud-contract-swagger.git</developerConnection>
+        <url>http://github.com/justtimki/spring-cloud-contract-swagger/tree/master</url>
     </scm>
 
     <properties>
@@ -247,66 +247,6 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-<!--            <repositories>
-                <repository>
-                    <id>spring-snapshots</id>
-                    <name>Spring Snapshots</name>
-                    <url>http://repo.spring.io/libs-snapshot-local</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>spring-milestones</id>
-                    <name>Spring Milestones</name>
-                    <url>http://repo.spring.io/libs-milestone-local</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-                <repository>
-                    <id>spring-releases</id>
-                    <name>Spring Releases</name>
-                    <url>http://repo.spring.io/release</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </repository>
-            </repositories>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>spring-snapshots</id>
-                    <name>Spring Snapshots</name>
-                    <url>http://repo.spring.io/libs-snapshot-local</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                </pluginRepository>
-                <pluginRepository>
-                    <id>spring-milestones</id>
-                    <name>Spring Milestones</name>
-                    <url>http://repo.spring.io/libs-milestone-local</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </pluginRepository>
-                <pluginRepository>
-                    <id>spring-plugin-snapshots</id>
-                    <name>Spring Snapshots</name>
-                    <url>http://repo.spring.io/plugins-snapshot-local</url>
-                    <snapshots>
-                        <enabled>true</enabled>
-                    </snapshots>
-                </pluginRepository>
-                <pluginRepository>
-                    <id>spring-plugin-milestones</id>
-                    <name>Spring Milestones</name>
-                    <url>http://repo.spring.io/plugins-release-local</url>
-                    <snapshots>
-                        <enabled>false</enabled>
-                    </snapshots>
-                </pluginRepository>
-            </pluginRepositories>-->
         </profile>
         <profile>
             <id>release</id>
@@ -376,12 +316,12 @@
             </activation>
             <distributionManagement>
                 <repository>
-                    <id>packagecloud-svenbayer</id>
-                    <url>packagecloud+https://packagecloud.io/svenbayer/blogsvenbayer</url>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
                 </repository>
                 <snapshotRepository>
-                    <id>packagecloud-svenbayer</id>
-                    <url>packagecloud+https://packagecloud.io/svenbayer/blogsvenbayer</url>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
                 </snapshotRepository>
             </distributionManagement>
             <build>
