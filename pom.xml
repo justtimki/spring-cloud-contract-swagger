@@ -38,7 +38,7 @@
         <connection>scm:git:git://github.com/justtimki/spring-cloud-contract-swagger.git</connection>
         <developerConnection>scm:git:ssh://github.com/justtimki/spring-cloud-contract-swagger.git</developerConnection>
         <url>http://github.com/justtimki/spring-cloud-contract-swagger/tree/master</url>
-        <tag>HEAD</tag>
+        <tag>spring-cloud-contract-swagger-1.2.2.BUILD</tag>
   </scm>
 
     <properties>
@@ -337,6 +337,34 @@
                     </plugin>
                 </plugins>
             </build>
+            <repositories>
+                <repository>
+                    <id>repository.spring.release</id>
+                    <name>Spring GA Repository</name>
+                    <url>https://repo.spring.io/release</url>
+                </repository>
+                <repository>
+                    <id>repository.spring.milestone</id>
+                    <name>Spring Milestone Repository</name>
+                    <url>https://repo.spring.io/milestone</url>
+                </repository>
+                <repository>
+                    <id>repository.spring.snapshot</id>
+                    <name>Spring Snapshot Repository</name>
+                    <url>https://repo.spring.io/snapshot</url>
+                </repository>
+            </repositories>
+
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>spring-snapshots</id>
+                    <url>https://repo.spring.io/snapshot</url>
+                </pluginRepository>
+                <pluginRepository>
+                    <id>spring-milestones</id>
+                    <url>https://repo.spring.io/milestone</url>
+                </pluginRepository>
+            </pluginRepositories>
         </profile>
         <profile>
             <id>snapshot</id>
