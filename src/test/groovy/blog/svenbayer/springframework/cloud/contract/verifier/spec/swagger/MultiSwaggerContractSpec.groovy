@@ -134,7 +134,7 @@ class MultiSwaggerContractSpec extends Specification {
             priority(4)
             request {
                 method(GET())
-                urlPath("/coffee-rocket-service/v1.0/find/planets/solarSystem") {
+                urlPath("/coffee-rocket-service/v1.0/find/planets/Sol") {
                     queryParameters {
                         parameter("planetName", new DslProperty(Pattern.compile(".+"), "planetName"))
                         parameter("numAsteroids", new DslProperty(Pattern.compile("[0-9]+"), 1))
@@ -173,7 +173,7 @@ class MultiSwaggerContractSpec extends Specification {
             priority(5)
             request {
                 method(GET())
-                urlPath("/coffee-rocket-service/v1.0/planets/planet/asteroids/asteroidName") {
+                urlPath("/coffee-rocket-service/v1.0/planets/Mars/asteroids/Apholo") {
                     queryParameters {
                     }
                 }
@@ -205,7 +205,7 @@ class MultiSwaggerContractSpec extends Specification {
             priority(6)
             request {
                 method(PUT())
-                urlPath("/coffee-rocket-service/v1.0/planets/planet/asteroids/asteroidName") {
+                urlPath("/coffee-rocket-service/v1.0/planets/Mars/asteroids/Apholo") {
                     queryParameters {
                     }
                 }
@@ -244,7 +244,7 @@ class MultiSwaggerContractSpec extends Specification {
             priority(7)
             request {
                 method(POST())
-                urlPath("/coffee-rocket-service/v1.0/planets/planet/asteroids/asteroidName") {
+                urlPath("/coffee-rocket-service/v1.0/planets/Mars/asteroids/Apholo") {
                     queryParameters {
                     }
                 }
@@ -283,7 +283,7 @@ class MultiSwaggerContractSpec extends Specification {
             priority(8)
             request {
                 method(DELETE())
-                urlPath("/coffee-rocket-service/v1.0/planets/planet/asteroids/asteroidName") {
+                urlPath("/coffee-rocket-service/v1.0/planets/Mars/asteroids/Apholo") {
                     queryParameters {
                     }
                 }

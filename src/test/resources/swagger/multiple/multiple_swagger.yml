@@ -190,6 +190,7 @@ paths:
           description: bean solar system
           required: true
           type: string
+          x-example: "Sol"
         - name: planetName
           in: query
           required: false
@@ -233,11 +234,13 @@ paths:
           description: bean planet
           required: true
           type: string
+          x-example: "Mars"
         - name: asteroidName
           in: path
           description: bean asteroid name
           required: true
           type: string
+          x-example: "Apholo"
         - name: X-Request-ID
           in: header
           description: X-Request-ID
@@ -270,11 +273,13 @@ paths:
           description: bean planet
           required: true
           type: string
+          x-example: "Mars"
         - name: asteroidName
           in: path
           description: bean asteroid name
           required: true
           type: string
+          x-example: "Apholo"
         - name: X-Request-ID
           in: header
           description: X-Request-ID
@@ -319,11 +324,13 @@ paths:
           description: bean planet
           required: true
           type: string
+          x-example: "Mars"
         - name: asteroidName
           in: path
           description: bean asteroid name
           required: true
           type: string
+          x-example: "Apholo"
         - name: X-Request-ID
           in: header
           description: X-Request-ID
@@ -368,12 +375,14 @@ paths:
           description: bean planet
           required: true
           type: string
+          x-example: "Mars"
         - name: asteroidName
           in: path
           description: bean asteroid name
           required: true
           type: string
           pattern: "[a-z]+"
+          x-example: "Apholo"
         - name: X-Request-ID
           in: header
           description: X-Request-ID
