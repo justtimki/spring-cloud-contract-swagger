@@ -1,6 +1,7 @@
 package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger
 
 import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.TestContractEquals
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.util.TestUtils
 import org.springframework.cloud.contract.spec.Contract
 import org.springframework.cloud.contract.spec.internal.DslProperty
 import spock.lang.Specification
@@ -35,6 +36,7 @@ class MinMaxValuesSwaggerContractSpec extends Specification {
                 }
                 headers {
                     header("X-Request-ID", new DslProperty(Pattern.compile(".+"), "123456"))
+                    header(TestUtils.REQUEST_TYPE_HEADER_NAME, new DslProperty(Pattern.compile(".+"), "CoffeeRocket"))
                     contentType(applicationJson())
                 }
                 body(
@@ -61,6 +63,7 @@ class MinMaxValuesSwaggerContractSpec extends Specification {
                     header("hyperLoopCount", 4)
                     header("draculaCount", 3)
                     header("batCount", 8)
+                    header(TestUtils.RESPONSE_TYPE_HEADER_NAME, "BeanPlanet")
                     contentType(allValue())
                 }
                 body(

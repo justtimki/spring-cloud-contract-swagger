@@ -46,13 +46,11 @@
         <spring-cloud.version>Hoxton.SR4</spring-cloud.version>
         <swagger-parser.version>2.0.19</swagger-parser.version>
         <swagger-annotations-version>1.5.21</swagger-annotations-version>
-        <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-        <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
-        <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
-        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-        <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
-        <junit-jupiter-api.version>5.6.2</junit-jupiter-api.version>
+        <generated-test-models.swagger>${project.basedir}/src/test/java</generated-test-models.swagger>
+        <generated-test-models.src.package>/</generated-test-models.src.package>
+        <generated-test-models.package.swagger>blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.models</generated-test-models.package.swagger>
+        <maven-checkstyle-plugin.includeTestSourceDirectory>false</maven-checkstyle-plugin.includeTestSourceDirectory>
     </properties>
 
     <dependencies>
@@ -117,12 +115,6 @@
             <artifactId>swagger-annotations</artifactId>
             <version>${swagger-annotations-version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit-jupiter-api.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
@@ -182,6 +174,7 @@
                 <version>2.3.1</version>
                 <executions>
                     <execution>
+                        <id>single_pathparam_swagger</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
@@ -194,11 +187,53 @@
                             <generateApis>false</generateApis>
                             <addCompileSourceRoot>false</addCompileSourceRoot>
                             <generateSupportingFiles>false</generateSupportingFiles>
-                            <modelPackage>${project.groupId}.test.model</modelPackage>
+                            <modelPackage>${generated-test-models.package.swagger}</modelPackage>
                             <configOptions>
-                                <sourceFolder>src/gen/java/main</sourceFolder>
+                                <sourceFolder>${generated-test-models.src.package}</sourceFolder>
                             </configOptions>
-                            <output>target/generated-test-sources</output>
+                            <output>${generated-test-models.swagger}</output>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>single_swagger</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/test/resources/swagger/single_swagger.yml
+                            </inputSpec>
+                            <language>spring</language>
+                            <library>spring-cloud</library>
+                            <generateApis>false</generateApis>
+                            <addCompileSourceRoot>false</addCompileSourceRoot>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <modelPackage>${generated-test-models.package.swagger}</modelPackage>
+                            <configOptions>
+                                <sourceFolder>${generated-test-models.src.package}</sourceFolder>
+                            </configOptions>
+                            <output>${generated-test-models.swagger}</output>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>multiple_swagger</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.basedir}/src/test/resources/swagger/multiple/multiple_swagger.yml
+                            </inputSpec>
+                            <language>spring</language>
+                            <library>spring-cloud</library>
+                            <generateApis>false</generateApis>
+                            <addCompileSourceRoot>false</addCompileSourceRoot>
+                            <generateSupportingFiles>false</generateSupportingFiles>
+                            <modelPackage>${generated-test-models.package.swagger}</modelPackage>
+                            <configOptions>
+                                <sourceFolder>${generated-test-models.src.package}</sourceFolder>
+                            </configOptions>
+                            <output>${generated-test-models.swagger}</output>
                         </configuration>
                     </execution>
                 </executions>
@@ -212,7 +247,7 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <repositories>
+<!--            <repositories>
                 <repository>
                     <id>spring-snapshots</id>
                     <name>Spring Snapshots</name>
@@ -271,7 +306,7 @@
                         <enabled>false</enabled>
                     </snapshots>
                 </pluginRepository>
-            </pluginRepositories>
+            </pluginRepositories>-->
         </profile>
         <profile>
             <id>release</id>

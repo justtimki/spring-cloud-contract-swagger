@@ -51,6 +51,12 @@ paths:
           required: false
           type: string
           x-example: "123456"
+        - name: X-Test-RequestType
+          in: header
+          description: RequestType
+          required: true
+          type: string
+          x-example: CoffeeRocket
       responses:
         '201':
           description: Created
@@ -58,6 +64,9 @@ paths:
             X-RateLimit-Limit:
               type: integer
               description: Request limit per hour.
+            X-Test-ResponseType:
+              type: string
+              x-example: BeanPlanet
           schema:
             $ref: '#/definitions/BeanPlanet'
         '401':
@@ -101,6 +110,12 @@ paths:
           required: false
           type: string
           x-example: "123456"
+        - name: X-Test-RequestType
+          in: header
+          description: RequestType
+          required: true
+          type: string
+          x-example: CoffeeRocket
       responses:
         '201':
           description: Created
@@ -108,6 +123,9 @@ paths:
             X-RateLimit-Limit:
               type: integer
               description: Request limit per hour.
+            X-Test-ResponseType:
+              type: string
+              x-example: BeanPlanet
           schema:
             $ref: '#/definitions/BeanPlanet'
         '401':
@@ -138,9 +156,19 @@ paths:
           description: X-Request-ID
           required: false
           type: string
+        - name: X-Test-RequestType
+          in: header
+          description: RequestType
+          required: true
+          type: string
+          x-example: BeanPlanet
       responses:
         '201':
           description: Created
+          headers:
+            X-Test-ResponseType:
+              type: string
+              x-example: CoffeeRocket
           schema:
             $ref: '#/definitions/CoffeeRocket'
         '401':
@@ -182,6 +210,10 @@ paths:
       responses:
         '200':
           description: OK
+          headers:
+            X-Test-ResponseType:
+              type: string
+              x-example: BeanPlanet
           schema:
             $ref: '#/definitions/BeanPlanet'
         '401':
@@ -214,6 +246,10 @@ paths:
       responses:
         '200':
           description: OK
+          headers:
+            X-Test-ResponseType:
+              type: string
+              x-example: BeanAsteroid
           schema:
             $ref: '#/definitions/BeanAsteroid'
         '401':
@@ -250,9 +286,19 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/BeanAsteroid'
+        - name: X-Test-RequestType
+          in: header
+          description: RequestType
+          required: true
+          type: string
+          x-example: BeanAsteroid
       responses:
         '200':
           description: OK
+          headers:
+            X-Test-ResponseType:
+              type: string
+              x-example: BeanSpaceLocation
           schema:
             $ref: '#/definitions/BeanSpaceLocation'
         '401':
@@ -289,9 +335,19 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/BeanAsteroid'
+        - name: X-Test-RequestType
+          in: header
+          description: RequestType
+          required: true
+          type: string
+          x-example: BeanAsteroid
       responses:
         '200':
           description: OK
+          headers:
+            X-Test-ResponseType:
+              type: string
+              x-example: BeanSpaceLocation
           schema:
             $ref: '#/definitions/BeanSpaceLocation'
         '201':
@@ -368,6 +424,10 @@ definitions:
       weight:
         type: number
         format: double
+      boxes:
+        type: array
+        items:
+          type: string
       beanonauts:
         type: array
         items:
@@ -392,6 +452,12 @@ definitions:
         type: string
       speed:
         type: integer
+      istransparent:
+        type: boolean
+      aliens:
+        type: array
+        items:
+          $ref: '#/definitions/BeanAliens'
       shape:
         type: string
         enum:
@@ -399,3 +465,11 @@ definitions:
           - 'SQUARE'
           - 'BEAN'
     title: BeanAsteroids
+  BeanAliens:
+    type: object
+    properties:
+      heads:
+        type: array
+        items:
+          type: string
+    title: BeanAliens

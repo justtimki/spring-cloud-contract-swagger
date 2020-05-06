@@ -170,4 +170,4 @@ definitions:
         type: array
         items:
           type: string
-    title: BeanAsteroids
+    title: BeanAliens

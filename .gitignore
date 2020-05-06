@@ -25,6 +25,7 @@ hs_err_pid*
 # Java
 target/
 bin/
+src/test/java/blog/svenbayer/springframework/cloud/contract/verifier/spec/swagger/models
 
 # Intellij
 .idea/

@@ -1,6 +1,7 @@
 package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger
 
 import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.TestContractEquals
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.util.TestUtils
 import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.exception.SwaggerContractConverterException
 import org.springframework.cloud.contract.spec.Contract
 import org.springframework.cloud.contract.spec.internal.DslProperty
@@ -34,6 +35,7 @@ class XIgnoreSwaggerContractSpec extends Specification {
                     }
                 }
                 headers {
+                    header(TestUtils.REQUEST_TYPE_HEADER_NAME, new DslProperty(Pattern.compile(".+"), "CoffeeRocket"))
                     contentType(applicationJson())
                 }
                 body(
@@ -56,6 +58,7 @@ class XIgnoreSwaggerContractSpec extends Specification {
                 status(201)
                 headers {
                     header("X-RateLimit-Limit", 1)
+                    header(TestUtils.RESPONSE_TYPE_HEADER_NAME, "BeanPlanet")
                     contentType(allValue())
                 }
                 body(

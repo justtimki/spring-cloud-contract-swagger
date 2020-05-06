@@ -1,6 +1,7 @@
 package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger
 
 import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.TestContractEquals
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.util.TestUtils
 import org.springframework.cloud.contract.spec.Contract
 import org.springframework.cloud.contract.spec.internal.DslProperty
 import spock.lang.Specification
@@ -35,6 +36,7 @@ class JsonSwaggerContractSpec extends Specification {
                 }
                 headers {
                     header("X-Request-ID", new DslProperty(Pattern.compile(".+"), "123456"))
+                    header(TestUtils.REQUEST_TYPE_HEADER_NAME, new DslProperty(Pattern.compile(".+"), "CoffeeRocket"))
                     contentType(applicationJson())
                 }
                 body("""{
@@ -56,6 +58,7 @@ class JsonSwaggerContractSpec extends Specification {
                 status(201)
                 headers {
                     header("X-RateLimit-Limit", 1)
+                    header(TestUtils.RESPONSE_TYPE_HEADER_NAME, "BeanPlanet")
                     contentType(allValue())
                 }
                 body("""{

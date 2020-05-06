@@ -76,6 +76,10 @@ definitions:
       weight:
         type: number
         format: double
+      boxes:
+        type: array
+        items:
+          type: string
       beanonauts:
         type: array
         items:
@@ -99,11 +103,25 @@ definitions:
       name:
         type: string
       speed:
-        type: number
+        type: integer
+      istransparent:
+        type: boolean
+      aliens:
+        type: array
+        items:
+          $ref: '#/definitions/BeanAliens'
       shape:
         type: string
         enum:
-          - 'round'
-          - 'square'
-          - 'bean'
+          - 'ROUND'
+          - 'SQUARE'
+          - 'BEAN'
     title: BeanAsteroids
+  BeanAliens:
+    type: object
+    properties:
+      heads:
+        type: array
+        items:
+          type: string
+    title: BeanAliens

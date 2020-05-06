@@ -1,6 +1,7 @@
 package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger
 
 import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.TestContractEquals
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.util.TestUtils
 import org.springframework.cloud.contract.spec.Contract
 import org.springframework.cloud.contract.spec.internal.DslProperty
 import spock.lang.Specification
@@ -35,14 +36,15 @@ class MultiSwaggerContractSpec extends Specification {
                 }
                 headers {
                     header("X-Request-ID", new DslProperty(Pattern.compile(".+"), "123456"))
+                    header(TestUtils.REQUEST_TYPE_HEADER_NAME, new DslProperty(Pattern.compile(".+"), "CoffeeRocket"))
                     contentType(applicationJson())
                 }
-                body(
-                        """{
+                body("""{
   "beanonauts" : [ {
     "name" : "name",
     "age" : 1
   } ],
+  "boxes" : [ "boxes" ],
   "fuel" : 1.1,
   "weight" : 1.1,
   "itinerary" : {
@@ -56,14 +58,18 @@ class MultiSwaggerContractSpec extends Specification {
                 status(201)
                 headers {
                     header("X-RateLimit-Limit", 1)
+                    header(TestUtils.RESPONSE_TYPE_HEADER_NAME, "BeanPlanet")
                     contentType(allValue())
                 }
-                body(
-                        """{
+                body("""{
   "asteroids" : [ {
     "shape" : "ROUND",
+    "aliens" : [ {
+      "heads" : [ "heads" ]
+    } ],
     "name" : "name",
-    "speed" : 1
+    "speed" : 1,
+    "istransparent" : true
   } ],
   "size" : 1,
   "name" : "name"
@@ -83,14 +89,18 @@ class MultiSwaggerContractSpec extends Specification {
                 }
                 headers {
                     header("X-Request-ID", new DslProperty(Pattern.compile(".+"), "X-Request-ID"))
+                    header(TestUtils.REQUEST_TYPE_HEADER_NAME, new DslProperty(Pattern.compile(".+"), "BeanPlanet"))
                     contentType(applicationJson())
                 }
-                body(
-                        """{
+                body("""{
   "asteroids" : [ {
     "shape" : "ROUND",
+    "aliens" : [ {
+      "heads" : [ "heads" ]
+    } ],
     "name" : "name",
-    "speed" : 1
+    "speed" : 1,
+    "istransparent" : true
   } ],
   "size" : 1,
   "name" : "name"
@@ -99,14 +109,15 @@ class MultiSwaggerContractSpec extends Specification {
             response {
                 status(201)
                 headers {
+                    header(TestUtils.RESPONSE_TYPE_HEADER_NAME, "CoffeeRocket")
                     contentType(applicationJson())
                 }
-                body(
-                        """{
+                body("""{
   "beanonauts" : [ {
     "name" : "name",
     "age" : 1
   } ],
+  "boxes" : [ "boxes" ],
   "fuel" : 1.1,
   "weight" : 1.1,
   "itinerary" : {
@@ -138,14 +149,18 @@ class MultiSwaggerContractSpec extends Specification {
             response {
                 status(200)
                 headers {
+                    header(TestUtils.RESPONSE_TYPE_HEADER_NAME, "BeanPlanet")
                     contentType(allValue())
                 }
-                body(
-                        """{
+                body("""{
   "asteroids" : [ {
     "shape" : "ROUND",
+    "aliens" : [ {
+      "heads" : [ "heads" ]
+    } ],
     "name" : "name",
-    "speed" : 1
+    "speed" : 1,
+    "istransparent" : true
   } ],
   "size" : 1,
   "name" : "name"
@@ -169,13 +184,18 @@ class MultiSwaggerContractSpec extends Specification {
             response {
                 status(200)
                 headers {
+                    header(TestUtils.RESPONSE_TYPE_HEADER_NAME, "BeanAsteroid")
                     contentType(allValue())
                 }
                 body(
                         """{
   "shape" : "ROUND",
   "name" : "name",
-  "speed" : 1
+  "speed" : 1,
+  "aliens" : [ {
+      "heads" : [ "heads" ]
+    } ],
+  "istransparent": true
 }""")
             }
         }
@@ -191,18 +211,24 @@ class MultiSwaggerContractSpec extends Specification {
                 }
                 headers {
                     header("X-Request-ID", new DslProperty(Pattern.compile(".+"), "X-Request-ID"))
+                    header(TestUtils.REQUEST_TYPE_HEADER_NAME, new DslProperty(Pattern.compile(".+"), "BeanAsteroid"))
                     contentType(applicationJson())
                 }
                 body(
                         """{
   "shape" : "ROUND",
   "name" : "name",
-  "speed" : 1
+  "speed" : 1,
+  "aliens" : [ {
+      "heads" : [ "heads" ]
+    } ],
+  "istransparent": true
 }""")
             }
             response {
                 status(200)
                 headers {
+                    header(TestUtils.RESPONSE_TYPE_HEADER_NAME, "BeanSpaceLocation")
                     contentType(allValue())
                 }
                 body(
@@ -224,18 +250,24 @@ class MultiSwaggerContractSpec extends Specification {
                 }
                 headers {
                     header("X-Request-ID", new DslProperty(Pattern.compile(".+"), "X-Request-ID"))
+                    header(TestUtils.REQUEST_TYPE_HEADER_NAME, new DslProperty(Pattern.compile(".+"), "BeanAsteroid"))
                     contentType(applicationJson())
                 }
                 body(
                         """{
   "shape" : "ROUND",
   "name" : "name",
-  "speed" : 1
+  "speed" : 1,
+  "aliens" : [ {
+      "heads" : [ "heads" ]
+    } ],
+  "istransparent": true
 }""")
             }
             response {
                 status(200)
                 headers {
+                    header(TestUtils.RESPONSE_TYPE_HEADER_NAME, "BeanSpaceLocation")
                     contentType(allValue())
                 }
                 body(

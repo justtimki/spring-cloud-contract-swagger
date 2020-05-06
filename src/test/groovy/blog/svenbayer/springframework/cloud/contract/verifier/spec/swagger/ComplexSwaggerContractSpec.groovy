@@ -1,6 +1,7 @@
 package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger
 
 import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.TestContractEquals
+import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder.util.TestUtils
 import org.springframework.cloud.contract.spec.Contract
 import org.springframework.cloud.contract.spec.internal.DslProperty
 import spock.lang.Specification
@@ -35,14 +36,15 @@ class ComplexSwaggerContractSpec extends Specification {
                 }
                 headers {
                     header("X-Request-ID", new DslProperty(Pattern.compile(".+"), "123456"))
+                    header(TestUtils.REQUEST_TYPE_HEADER_NAME, new DslProperty(Pattern.compile(".+"), "CoffeeRocket"))
                     contentType(applicationJson())
                 }
-                body(
-                        """{
+                body("""{
   "beanonauts" : [ {
     "name" : "Beanon Beanusk",
     "age" : 47
   } ],
+  "boxes" : [ "boxes" ],
   "fuel" : 980.3,
   "weight" : 20.85,
   "itinerary" : {
@@ -56,14 +58,18 @@ class ComplexSwaggerContractSpec extends Specification {
                 status(201)
                 headers {
                     header("X-RateLimit-Limit", 1)
+                    header(TestUtils.RESPONSE_TYPE_HEADER_NAME, "BeanPlanet")
                     contentType(allValue())
                 }
-                body(
-                        """{
+                body("""{
   "asteroids" : [ {
     "shape" : "BEAN",
+    "aliens" : [ {
+      "heads" : [ "heads" ]
+    } ],
     "name" : "Phobos",
-    "speed" : 23
+    "speed" : 23,
+    "istransparent" : true
   } ],
   "size" : 6779,
   "name" : "Mars"

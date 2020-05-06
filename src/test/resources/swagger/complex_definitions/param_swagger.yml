@@ -53,6 +53,12 @@ paths:
           required: false
           type: string
           x-example: "123456"
+        - name: X-Test-RequestType
+          in: header
+          description: RequestType
+          required: true
+          type: string
+          x-example: CoffeeRocket
       responses:
         '201':
           description: Created
@@ -60,6 +66,9 @@ paths:
             X-RateLimit-Limit:
               type: integer
               description: Request limit per hour.
+            X-Test-ResponseType:
+              type: string
+              x-example: BeanPlanet
           schema:
             $ref: '#/definitions/BeanPlanet'
         '401':
@@ -105,6 +114,10 @@ definitions:
         type: number
         format: double
         default: 20.85
+      boxes:
+        type: array
+        items:
+          type: string
       beanonauts:
         type: array
         items:
@@ -135,6 +148,12 @@ definitions:
         type: number
         format: int32
         example: 23
+      istransparent:
+        type: boolean
+      aliens:
+        type: array
+        items:
+          $ref: '#/definitions/BeanAliens'
       shape:
         type: string
         enum:
@@ -143,3 +162,11 @@ definitions:
           - 'BEAN'
         default: 'BEAN'
     title: BeanAsteroids
+  BeanAliens:
+    type: object
+    properties:
+      heads:
+        type: array
+        items:
+          type: string
+    title: BeanAliens

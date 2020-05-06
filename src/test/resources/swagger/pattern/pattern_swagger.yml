@@ -55,6 +55,12 @@ paths:
           required: false
           type: string
           x-example: "123456"
+        - name: X-Test-RequestType
+          in: header
+          description: RequestType
+          required: true
+          type: string
+          x-example: CoffeeRocket
       responses:
         '201':
           description: Created
@@ -63,6 +69,9 @@ paths:
               type: integer
               description: Request limit per hour.
               x-example: 5
+            X-Test-ResponseType:
+              type: string
+              x-example: BeanPlanet
           schema:
             $ref: '#/definitions/BeanPlanet'
         '401':
@@ -151,4 +160,4 @@ definitions:
         type: array
         items:
           type: string
-    title: BeanAsteroids
+    title: BeanAliens
