@@ -5,12 +5,12 @@
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-contract-tools</artifactId>
         <version>2.2.2.RELEASE</version>
-        <relativePath />
+        <relativePath/>
     </parent>
 
     <groupId>io.github.justtimki</groupId>
     <artifactId>spring-cloud-contract-swagger</artifactId>
-    <version>1.2.4.BUILD-SNAPSHOT</version>
+    <version>1.2.5-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>io.github.justtimki:spring-cloud-contract-swagger</name>
@@ -121,8 +121,8 @@
         <dependencies>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
+                <artifactId>spring-cloud-contract-dependencies</artifactId>
+                <version>2.2.2.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
