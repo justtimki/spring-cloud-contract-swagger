@@ -10,7 +10,7 @@
 
     <groupId>io.github.justtimki</groupId>
     <artifactId>spring-cloud-contract-swagger</artifactId>
-    <version>1.2.10.RELEASE</version>
+    <version>1.2.11-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>io.github.justtimki:spring-cloud-contract-swagger</name>
@@ -38,7 +38,7 @@
         <connection>scm:git:git://github.com/justtimki/spring-cloud-contract-swagger.git</connection>
         <developerConnection>scm:git:git@github.com:justtimki/spring-cloud-contract-swagger.git</developerConnection>
         <url>https://github.com/justtimki/spring-cloud-contract-swagger/tree/master</url>
-        <tag>1.2.10.RELEASE</tag>
+        <tag>spring-cloud-contract-swagger-1.2.3.BUILD</tag>
   </scm>
 
     <properties>
