@@ -254,8 +254,10 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 	}
 
 	private String extractExample(final PathParameter parameter) {
-		return Optional.ofNullable(parameter.getVendorExtensions().get(SwaggerFields.X_EXAMPLE.field()))
-				.map(String::valueOf).orElse(parameter.getName());
+		return Optional.ofNullable(parameter.getVendorExtensions()
+				.get(SwaggerFields.X_EXAMPLE.field()))
+				.map(String::valueOf)
+				.orElse(parameter.getName());
 	}
 
 	/**
