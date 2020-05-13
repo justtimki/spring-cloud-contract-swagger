@@ -14,7 +14,7 @@ schemes:
   - http
 basePath: /coffee-rocket-service/v1.0
 paths:
-  '/planets/{planet}/asteroids/{asteroidName}':
+  '/planets/{planet}/asteroids/{asteroidName}/limit/{limit}':
     get:
       description: Retrieve existing bean asteroids from a bean planet.
       produces:
@@ -32,6 +32,12 @@ paths:
           required: true
           type: string
           x-example: "Apholo"
+        - name: limit
+          in: path
+          description: limit of asteroids
+          required: true
+          type: number
+          x-example: 10
         - name: X-Request-ID
           in: header
           description: X-Request-ID

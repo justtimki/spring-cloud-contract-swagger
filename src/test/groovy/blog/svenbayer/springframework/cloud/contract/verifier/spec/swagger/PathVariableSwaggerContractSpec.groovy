@@ -35,12 +35,12 @@ class PathVariableSwaggerContractSpec extends Specification {
                 new File(SwaggerContractConverterSpec.getResource("/swagger/pathVariable/pathVariable_swagger.yml").toURI())
 
         Contract expectedContract = Contract.make {
-            name("1_planets_planet_asteroids_asteroidName_GET")
+            name("1_planets_planet_asteroids_asteroidName_limit_limit_GET")
             description("Retrieve existing bean asteroids from a bean planet.")
             priority(1)
             request {
                 method(GET())
-                urlPath("/coffee-rocket-service/v1.0/planets/Mars/asteroids/Apholo") {
+                urlPath("/coffee-rocket-service/v1.0/planets/Mars/asteroids/Apholo/limit/10") {
                     queryParameters {
                     }
                 }
