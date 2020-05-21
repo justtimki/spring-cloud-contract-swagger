@@ -133,12 +133,12 @@ definitions:
         items:
           $ref: '#/definitions/BeanAliens'
       shape:
-        type: string
-        enum:
-          - 'ROUND'
-          - 'SQUARE'
-          - 'BEAN'
+        $ref: '#/definitions/Shape'
     title: BeanAsteroids
+  Shape:
+    type: string
+    enum: ['ROUND', 'SQUARE', 'BEAN']
+    default: 'BEAN'
   BeanAliens:
     type: object
     properties:

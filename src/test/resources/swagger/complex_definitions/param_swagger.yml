@@ -138,6 +138,10 @@ definitions:
         items:
           $ref: '#/definitions/BeanAsteroid'
     title: BeanPlanet
+  Shape:
+    type: string
+    enum: ['ROUND', 'SQUARE', 'BEAN']
+    default: 'BEAN'
   BeanAsteroid:
     type: object
     properties:
@@ -155,12 +159,7 @@ definitions:
         items:
           $ref: '#/definitions/BeanAliens'
       shape:
-        type: string
-        enum:
-          - 'ROUND'
-          - 'SQUARE'
-          - 'BEAN'
-        default: 'BEAN'
+        $ref: '#/definitions/Shape'
     title: BeanAsteroids
   BeanAliens:
     type: object
