@@ -16,12 +16,14 @@
 
 package blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.builder;
 
+import javax.annotation.Nullable;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import blog.svenbayer.springframework.cloud.contract.verifier.spec.swagger.exception.SwaggerContractConverterException;
 import io.swagger.models.HttpMethod;
+import org.springframework.util.StringUtils;
 
 /**
  * Builds a contract name for a given path and http method.
@@ -48,10 +50,11 @@ public class ContractNameBuilder {
 	 * @param priority the order of the method
 	 * @param pathLink the path of the endpoint
 	 * @param httpMethod the operation (GET, POST, PUT, DELETE)
+	 * @param operationId the unique operation id
 	 * @return the formatted contract name
 	 */
 	public String createContractName(AtomicInteger priority, String pathLink,
-			HttpMethod httpMethod) {
+			HttpMethod httpMethod, @Nullable String operationId) {
 		Matcher pathMatcher = Pattern.compile(PATH_EXTRACT).matcher(pathLink);
 		if (!pathMatcher.find()) {
 			throw new SwaggerContractConverterException(
@@ -59,7 +62,11 @@ public class ContractNameBuilder {
 		}
 		String extractedPath = pathMatcher.group(1);
 		String cleanedUpPathLink = extractedPath.replaceAll(PATH_CLEANUP, PATH_SEP);
-		return priority + PATH_SEP + cleanedUpPathLink + PATH_SEP + httpMethod.name();
+		if (StringUtils.isEmpty(operationId)) {
+			return priority + PATH_SEP + cleanedUpPathLink + PATH_SEP + httpMethod.name();
+		}
+		return priority + PATH_SEP + cleanedUpPathLink + PATH_SEP + httpMethod.name()
+				+ PATH_SEP + operationId;
 	}
 
 }

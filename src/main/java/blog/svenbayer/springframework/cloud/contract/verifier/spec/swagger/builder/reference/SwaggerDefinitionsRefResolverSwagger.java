@@ -36,17 +36,11 @@ import org.apache.commons.collections.CollectionUtils;
  */
 public class SwaggerDefinitionsRefResolverSwagger implements SwaggerReferenceResolver {
 
-	private static final Map<String, String> REPLACEMENTS = Map.of(
-			"\\\\r\\\\n", System.lineSeparator(),
-			"\\\\n", "\n",
-			"\\\\r", "\r",
-			"\\\\\"", "\"",
-			"\"\\{", "{",
-			"\\}\"", "}"
-	);
+	private static final Map<String, String> REPLACEMENTS = Map.of("\\\\r\\\\n",
+			System.lineSeparator(), "\\\\n", "\n", "\\\\r", "\r", "\\\\\"", "\"", "\"\\{",
+			"{", "\\}\"", "}");
 
-	private final ResponseHeaderValueBuilder responseHeaderValueBuilder =
-			new ResponseHeaderValueBuilder();
+	private final ResponseHeaderValueBuilder responseHeaderValueBuilder = new ResponseHeaderValueBuilder();
 
 	private final String reference;
 
@@ -57,7 +51,6 @@ public class SwaggerDefinitionsRefResolverSwagger implements SwaggerReferenceRes
 	/**
 	 * Creates a key-value representation for the given reference and Swagger model
 	 * definitions.
-	 *
 	 * @param definitions the Swagger model definitions
 	 * @return a json representation of the Swagger model definition
 	 */
@@ -83,7 +76,6 @@ public class SwaggerDefinitionsRefResolverSwagger implements SwaggerReferenceRes
 
 	/**
 	 * Cleans up a json-field Json string.
-	 *
 	 * @param jsonString the Json string that got mapped to often by ObjectMapper
 	 * @return the cleaned-up Json string
 	 */
@@ -96,8 +88,7 @@ public class SwaggerDefinitionsRefResolverSwagger implements SwaggerReferenceRes
 
 	/**
 	 * Resolves a Swagger reference with the given Swagger definitions.
-	 *
-	 * @param reference   the Swagger reference
+	 * @param reference the Swagger reference
 	 * @param definitions the Swagger definitions
 	 * @return the key-value representation of the Swagger reference
 	 */
@@ -117,8 +108,9 @@ public class SwaggerDefinitionsRefResolverSwagger implements SwaggerReferenceRes
 
 		if (isReferenceEnum(referenceModel)) {
 			ModelImpl referenceModelImpl = (ModelImpl) referenceModel;
-			return String.valueOf(Optional.ofNullable(referenceModelImpl.getDefaultValue())
-					.orElse(referenceModelImpl.getEnum().get(0)));
+			return String
+					.valueOf(Optional.ofNullable(referenceModelImpl.getDefaultValue())
+							.orElse(referenceModelImpl.getEnum().get(0)));
 		}
 		return definitions.get(referenceName).getProperties().entrySet().stream()
 				.collect(Collectors.toMap(Map.Entry::getKey,
@@ -129,11 +121,13 @@ public class SwaggerDefinitionsRefResolverSwagger implements SwaggerReferenceRes
 
 	private boolean isReferenceValid(final Model referenceModel) {
 		return referenceModel != null && referenceModel.getProperties() == null
-				&& (referenceModel instanceof ModelImpl
-				&& (CollectionUtils.isEmpty(((ModelImpl) referenceModel).getEnum())));
+				&& (referenceModel instanceof ModelImpl && (CollectionUtils
+						.isEmpty(((ModelImpl) referenceModel).getEnum())));
 	}
 
 	private boolean isReferenceEnum(final Model referenceModel) {
-		return referenceModel.getProperties() == null && referenceModel instanceof ModelImpl;
+		return referenceModel.getProperties() == null
+				&& referenceModel instanceof ModelImpl;
 	}
+
 }

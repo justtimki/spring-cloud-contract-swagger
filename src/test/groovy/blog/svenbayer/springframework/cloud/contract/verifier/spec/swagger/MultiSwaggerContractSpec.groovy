@@ -23,7 +23,7 @@ class MultiSwaggerContractSpec extends Specification {
         File multipleSwaggerYaml = new File(SwaggerContractConverterSpec.getResource("/swagger/multiple/multiple_swagger.yml").toURI())
         Contract expectedContract0 = Contract.make {
             label("takeoff_coffee_bean_rocket")
-            name("1_takeoff_POST")
+            name("1_takeoff_POST_takeoff")
             description("API endpoint to send a coffee rocket to a bean planet and returns the bean planet.")
             priority(1)
             request {
@@ -298,9 +298,32 @@ class MultiSwaggerContractSpec extends Specification {
                 }
             }
         }
+        Contract expectedContract7 = Contract.make {
+            name("9_planets_names_GET")
+            description("Find planets names in the given Solar System.")
+            priority(9)
+            label("get planet names")
+            request {
+                method(GET())
+                urlPath("/coffee-rocket-service/v1.0/planets/names") {
+                    queryParameters {}
+                }
+                headers {
+                    header("X-Request-ID", new DslProperty(Pattern.compile(".+"), "X-Request-ID"))
+                    contentType(applicationJson())
+                }
+            }
+            response {
+                status(200)
+                headers {
+                    contentType(allValue())
+                }
+                body("""{ "items: [{"x" : 1,"y" : 1}]""")
+            }
+        }
         when:
         Collection<Contract> contracts = converter.convertFrom(multipleSwaggerYaml)
         then:
-        testContractEquals.assertContractEquals([expectedContract0, expectedContract1, expectedContract2, expectedContract3, expectedContract4, expectedContract5, expectedContract6], contracts)
+        testContractEquals.assertContractEquals([expectedContract0, expectedContract1, expectedContract2, expectedContract3, expectedContract4, expectedContract5, expectedContract6, expectedContract7], contracts)
     }
 }

@@ -16,6 +16,7 @@ basePath: /coffee-rocket-service/v1.0
 paths:
   /takeoff:
     post:
+      operationId: "takeoff"
       x-ignore: false
       summary: Sends a coffee rocket to a bean planet and returns the bean planet.
       tags:
@@ -395,6 +396,38 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden
+  /planets/names:
+    get:
+      tags:
+        - get planet names
+      description: Find planets names in the given Solar System.
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: X-Request-ID
+          in: header
+          description: X-Request-ID
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          x-example: '{ "items: [{"x" : 1,"y" : 1}]'
+          schema:
+            type: object
+            properties:
+              items:
+                type: array
+                items:
+                  $ref: '#/definitions/BeanSpaceLocation'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
 definitions:
   BeanSpaceLocation:
     type: object

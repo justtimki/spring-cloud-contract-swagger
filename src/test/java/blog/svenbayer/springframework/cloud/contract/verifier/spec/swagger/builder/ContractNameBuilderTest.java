@@ -45,9 +45,11 @@ public class ContractNameBuilderTest {
 		String pathName = "/find/planets/{solarSystem}/{system}";
 		AtomicInteger priority = new AtomicInteger(1);
 		HttpMethod post = HttpMethod.POST;
+		String operationId = "findPlanets";
 		String contractName = this.contractNameBuilder.createContractName(priority,
-				pathName, post);
-		Assertions.assertEquals("1_find_planets_solarSystem_system_POST", contractName);
+				pathName, post, operationId);
+		Assertions.assertEquals("1_find_planets_solarSystem_system_POST_findPlanets",
+				contractName);
 	}
 
 	@DisplayName("Expect Exception for empty Contract path")
@@ -58,7 +60,7 @@ public class ContractNameBuilderTest {
 		HttpMethod post = HttpMethod.POST;
 		SwaggerContractConverterException exception = Assertions.assertThrows(
 				SwaggerContractConverterException.class, () -> this.contractNameBuilder
-						.createContractName(priority, pathName, post));
+						.createContractName(priority, pathName, post, null));
 		Assertions.assertEquals("Could not extract path of method from Swagger file: ",
 				exception.getMessage());
 	}

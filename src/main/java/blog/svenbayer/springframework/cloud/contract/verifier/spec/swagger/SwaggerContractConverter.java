@@ -42,6 +42,7 @@ import io.swagger.models.parameters.Parameter;
 import io.swagger.models.parameters.PathParameter;
 import io.swagger.models.parameters.QueryParameter;
 import io.swagger.parser.SwaggerParser;
+import org.apache.commons.collections.CollectionUtils;
 
 import org.springframework.cloud.contract.spec.Contract;
 import org.springframework.cloud.contract.spec.ContractConverter;
@@ -143,7 +144,7 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 		Operation operation = operationEntry.getValue();
 
 		String contractName = this.contractNameBuilder.createContractName(priority,
-				pathLink, operationEntry.getKey());
+				pathLink, operationEntry.getKey(), operation.getOperationId());
 		contract.setName(contractName);
 
 		if (operation.getDescription() != null) {
@@ -215,32 +216,33 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 	 * @param operationEntry the operation (GET, PUT, POST, DELETE)
 	 * @param contract the Spring Cloud contract
 	 */
-	private void createRequest(Swagger swagger, String pathLink,
-			Map.Entry<HttpMethod, Operation> operationEntry, Contract contract) {
-		Operation operation = operationEntry.getValue();
-		final Request request = new Request();
+	private void createRequest(final Swagger swagger, final String pathLink,
+			final Map.Entry<HttpMethod, Operation> operationEntry, final Contract contract) {
+		final var operation = operationEntry.getValue();
+		final var request = new Request();
 		contract.setRequest(request);
 
-		HttpMethod httpMethod = operationEntry.getKey();
+		final var httpMethod = operationEntry.getKey();
 		if (httpMethod != null) {
 			request.method(httpMethod.name());
 		}
 		if (pathLink != null) {
 			request.urlPath(swagger.getBasePath() + pathLink);
-			if (operation.getParameters() != null) {
+			if (CollectionUtils.isNotEmpty(operation.getParameters())) {
 				operation.getParameters().stream()
-						.filter(param -> param instanceof PathParameter)
+						.filter(PathParameter.class::isInstance)
 						.map(PathParameter.class::cast)
 						.forEach(param -> request
 								.urlPath(request.getUrlPath().getClientValue().toString()
 										.replace("{" + param.getName() + "}",
 												extractExample(param))));
 
-				final QueryParameters queryParameters = new QueryParameters();
+				final var queryParameters = new QueryParameters();
 				request.getUrlPath().setQueryParameters(queryParameters);
 				operation.getParameters().stream()
-						.filter(param -> param instanceof QueryParameter)
-						.map(AbstractSerializableParameter.class::cast).forEach(param -> {
+						.filter(QueryParameter.class::isInstance)
+						.map(AbstractSerializableParameter.class::cast)
+						.forEach(param -> {
 							DslProperty<Object> value = this.dslValueBuilder
 									.createDslValueForParameter(param);
 							if (value != null) {
@@ -254,10 +256,10 @@ public final class SwaggerContractConverter implements ContractConverter<Swagger
 	}
 
 	private String extractExample(final PathParameter parameter) {
-		return Optional.ofNullable(parameter.getVendorExtensions()
-				.get(SwaggerFields.X_EXAMPLE.field()))
-				.map(String::valueOf)
-				.orElse(parameter.getName());
+		return Optional
+				.ofNullable(parameter.getVendorExtensions()
+						.get(SwaggerFields.X_EXAMPLE.field()))
+				.map(String::valueOf).orElse(parameter.getName());
 	}
 
 	/**
